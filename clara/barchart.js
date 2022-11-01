@@ -1,6 +1,6 @@
 function main() {
 	var svg = d3.select("svg"),
-        margin = 150,
+        margin = 250,
         width = svg.attr("width") - margin,
         height = svg.attr("height") - margin;
 
@@ -28,12 +28,11 @@ function main() {
         g.append("g")
          .attr("transform", "translate(0," + height + ")")
          .call(d3.axisBottom(xScale))
-         .append("text")
-         .attr("y", height - 250)
-         .attr("x", width - 100)
-         .attr("text-anchor", "end")
-         .attr("stroke", "black")
-         .text("Name");
+		 .selectAll("text")  
+		 .style("text-anchor", "end")
+		 .attr("dx", "-.8em")
+		 .attr("dy", "-.6em")
+		 .attr("transform", "rotate(-90)" );
 
         g.append("g")
          .call(d3.axisLeft(yScale).tickFormat(function(d){return d;}))
