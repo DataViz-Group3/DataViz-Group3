@@ -6,9 +6,10 @@ function main() {
 
     svg.append("text")
        .attr("transform", "translate(100,0)")
-       .attr("x", 50)
+       .attr("x", 0)
        .attr("y", 50)
        .attr("font-size", "24px")
+	   .text("Tree Abundance")
 
     var xScale = d3.scaleBand().range([0, width]).padding(0.4),
         yScale = d3.scaleLinear().range([height, 0]);
@@ -19,8 +20,10 @@ function main() {
 			
     d3.csv("../data_clean/a1_v1_tree_abundance.csv", function(data) {
         xScale.domain(data.map(function(d) { return d.Name; }));
+		data.forEach(function(d) {
+			d.Count = +d.Count;
+		  });
         yScale.domain([0, d3.max(data, function(d) { return d.Count; })]);
-		//yScale.domain([0, 1030]);
 
         g.append("g")
          .attr("transform", "translate(0," + height + ")")
@@ -40,7 +43,7 @@ function main() {
 	 .attr('dy', '-5em')
 	 .attr('text-anchor', 'end')
 	 .attr('stroke', 'black')
-	 .text('Name')
+	 .text('Count')
 
         g.selectAll(".bar")
          .data(data)

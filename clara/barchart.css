@@ -1,21 +1,21 @@
 .bar{
-	fill: navy;
+	fill: rgb(32, 128, 0);
 }
 .highlight{
-	fill:palevioletred
+	fill:rgb(13, 66, 3)
 }
 #tooltip{
 	position: absolute;
 	width: 200px;
 	height: auto;
 	padding: 10px;
-	background-color: blanchedalmond;
+	background-color: rgb(185, 230, 171);
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
-	-webkit-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
-	-moz-box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
-	box-shadow: 4px 4px 10px rgba(0,0,0,0.4);
+	-webkit-box-shadow: 4px 4px 10px rgba(136, 225, 156, 0.4);
+	-moz-box-shadow: 4px 4px 10px rgba(181, 239, 172, 0.4);
+	box-shadow: 4px 4px 10px rgba(82, 232, 92, 0.4);
 	pointer-events: none;
 }
 #tooltip.hidden{
