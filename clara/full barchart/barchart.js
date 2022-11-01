@@ -18,7 +18,7 @@ function main() {
             .attr("transform", "translate(" + 100 + "," + 100 + ")");
 
 			
-    d3.csv("../data_clean/a1_v1_tree_abundance.csv", function(data) {
+    d3.csv("../../data_clean/a1_v1_tree_abundance.csv", function(data) {
         xScale.domain(data.map(function(d) { return d.Name; }));
 		data.forEach(function(d) {
 			d.Count = +d.Count;
@@ -33,6 +33,14 @@ function main() {
 		 .attr("dx", "-.8em")
 		 .attr("dy", "-.6em")
 		 .attr("transform", "rotate(-90)" );
+
+		g.append("g")
+		 .append("text")
+		  .attr("x", 1300)
+		 .attr("y", 450)
+		 .attr('text-anchor', 'end')
+		 .attr('stroke', 'black')
+		 .text("Name")
 
         g.append("g")
          .call(d3.axisLeft(yScale).tickFormat(function(d){return d;}))
@@ -71,8 +79,12 @@ function main() {
 		d3.select('#tooltip')
 			.style('left', xPos + 'px')
 			.style('top', yPos + 'px')
-			.select('#value').text(i.value)
+			.html(`
+				<h2>${d.Name}</h2>
+				<div> Count: ${d.Count}</div>
+			`);
 		
+		d3.select('#tooltip').classed('hidden', false);
 		d3.select('#tooltip').classed('hidden', false);
 
 
