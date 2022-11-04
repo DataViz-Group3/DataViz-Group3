@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <link rel="stylesheet" href="../static/css/custom_style.css">
+
+
+
+    <title>Assignment 1 - Viz 3</title>
+</head>
+<body>
+
+    <div class="assignment-heading">
+        <h1>Assignment 1 - viz 3</h1>
+        <h2>Stacked chart with small multiples</h2>
+    </div>
+
+    <div id="viz3" class="graph"></div>
+
+    <script>
+
+        let win_width = d3.select('#viz3').node().getBoundingClientRect().width;
+
+        // set the dimensions and margins of the graph
+        let margin = {top: 10, right: 30, bottom: 20, left: 30};
+        let graph_width = win_width - margin.right - margin.left;
+        let graph_height = 400;
+
+        // Good value found by trial and error
+        let axis_label_width = 200;
+
+        let sub_graphs = {};
+
+        // Parse the Data
+        d3.csv("../data_clean/a1_v3_stacked_chart_tot.csv", function(data) {
+
+            // Subgroups (trees, other and total), groups (circoscrizione)
+            let subgroups = data.columns.slice(1)
+            let groups = d3.map(data, function(d){return(d['Circoscrizione Name'])}).keys()
+
+            // Getting the largest total value
+            let range_max = d3.max(data, function(d) {return +d['Total']; });
+            let range_small = range_max / 3;
+
+            // 15: 1 unit for each tree then 5 for total and other columns
+            let sub_graph_width = (graph_width - axis_label_width - ((subgroups.length - 1) * margin.right)) / 15;
+
+            // color palette = one color per subgroup
+            let color = d3.scaleOrdinal()
+                .domain(subgroups)
+                .range(['#e41a1c','#377eb8','#4daf4a','#964aaf','#4aafa3','#afa24a','#7d4aaf']);
+
+            // For each subgroup
+            for (let i = 0; i < subgroups.length; i++) {
+                let subgroup = subgroups[i];
+
+                let mult = (i < subgroups.length - 2)? 1: 5;
+                let sub_width = sub_graph_width * mult;
+
+                let left_axis_margin = (i === 0)? axis_label_width: 0
+
+                // Append an svg per tree and for total
+                let svg = d3.select("#viz3")
+                    .append("svg")
+                    .attr("width", sub_width + left_axis_margin + margin.right)
+                    .attr("height", graph_height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + left_axis_margin + "," + margin.top + ")");
+
+                // Add X axis
+                let x = d3.scaleLinear()
+                    .domain([0, (i < subgroups.length - 2)? range_small: range_max])
+                    .range([0, sub_width]);
+
+                // Add Y axis
+                let y = d3.scaleBand()
+                    .domain(groups)
+                    .range([ graph_height, 0 ])
+                    .padding([0.2]);
+                let left_axis = d3.axisLeft(y)
+                svg.append("g").call((i === 0)? left_axis: left_axis.tickValues([]));
+
+                // Add subgroup data
+                svg.selectAll("mybar")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("x", function(d) { return 0; })
+                    .attr("y", function(d) { return y(d['Circoscrizione Name']); })
+                    .attr("width", function(d) { return x(d[subgroup]); })
+                    .attr("height", y.bandwidth())
+                    .attr("fill", color(subgroup))
+
+                // Sub graphs
+                sub_graphs[subgroup] = svg;
+            }
+        });
+                /*
+        function set_width() {
+            let win_width = d3.select('#viz3').node().getBoundingClientRect().width;
+            let graph_width = win_width - margin.right - margin.left;
+
+            for (var sub_g in sub_graphs) {
+
+
+                currentWidth = parseInt(d3.select('#div_basicResize').style('width'), 10)
+                Svg.attr("width", currentWidth)
+
+                // Update the X scale and Axis (here the 20 is just to have a bit of margin)
+                x.range([ 20, currentWidth-20 ]);
+                xAxis.call(d3.axisBottom(x))
+
+                // Add the last information needed for the circles: their X position
+                myCircles.attr("cx", function(d){ return x(d)})
+            }
+        }
+
+                 */
+
+        //window.addEventListener('resize', set_width );
+    </script>
+
+</body>
+</html>
