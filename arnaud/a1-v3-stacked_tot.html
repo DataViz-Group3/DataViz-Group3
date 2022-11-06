@@ -78,7 +78,7 @@
                 .style("border-radius", "5px")
                 .style("font-size", "12px")
                 .style("pointer-events", "none")
-                .style("padding", "5px")
+                .style("padding", "5px");
 
             // Create Y axis - Defined in the same way for all sub graphs
             let y = d3.scaleBand()
@@ -131,13 +131,16 @@
 
                 // Three function that change the tooltip when user hover / move / leave a cell
                 let mouseover = function(d) {
-                    Tooltip.style("opacity", 1);
+                    // Tooltip.style("opacity", 1); // Remove tooltip
                     d3.selectAll("#" + normalize_name(d['Circoscrizione Name']))
                         .style("opacity", 1);
                     d3.select("#high_" + normalize_name(d['Circoscrizione Name']))
-                        .style("opacity", 0.2);
+                        .style("opacity", 0.6);
+                    d3.selectAll("#info_" + normalize_name(d['Circoscrizione Name']))
+                        .style("opacity", 1);
                 }
                 let mousemove = function(d) {
+                    /*
                     let tree_counts = "";
                     for (let i = 0; i < subgroups.length; i++) {
                         tree_counts = tree_counts + "<br> - " + subgroups[i] + ": " + d[subgroups[i]];
@@ -145,12 +148,16 @@
                     Tooltip.html("Trees counts in " + d['Circoscrizione Name'] + tree_counts)
                         .style("left", (d3.event.pageX+20) + "px")
                         .style("top", (d3.event.pageY) + "px");
+                        
+                     */
                 }
                 let mouseleave = function(d) {
-                    Tooltip.style("opacity", 0);
+                    //Tooltip.style("opacity", 0);
                     d3.selectAll("#" + normalize_name(d['Circoscrizione Name']))
                         .style("opacity", 0.8);
                     d3.select("#high_" + normalize_name(d['Circoscrizione Name']))
+                        .style("opacity", 0);
+                    d3.selectAll("#info_" + normalize_name(d['Circoscrizione Name']))
                         .style("opacity", 0);
                 }
 
@@ -173,6 +180,29 @@
                     .duration(500)
                     .delay(function(d,i){ return i * 50;})
                     .attr("width", function(d) { return x(d[subgroup]); });
+
+                // Add number detail
+                sub_svg.selectAll("mydetail")
+                    .data(data)
+                    .enter()
+                    .append("text")
+                    .attr("id", function(d) { return "info_" + normalize_name(d['Circoscrizione Name']); })
+                    .attr("x", function(d) { return x(d[subgroup]); })
+                    .attr("y", function(d) { return y(d['Circoscrizione Name']) + (y.bandwidth() / 2) + 3; })
+                    .attr("text-anchor", "start")
+                    .style("font-size", "12px")
+                    .style("fill", "white")
+                    .style("pointer-events", "none")
+                    .style("opacity", 0)
+                    .text(function (d) { return d[subgroup]; })
+                    .attr("x", function(d) {
+                        if (x(d[subgroup]) - 10 > this.getComputedTextLength()) {
+                            return x(d[subgroup]) - this.getComputedTextLength() - 5;
+                        }
+                        else {
+                            return 5;
+                        }
+                    });
 
                 // Finalize the subgroup iteration by adding the width of the subgraph to the shift from the left var
                 shift_from_left = shift_from_left + sub_width + margin.right;
