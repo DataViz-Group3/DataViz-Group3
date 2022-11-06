@@ -20,17 +20,23 @@
 
     <script>
 
+        // Definition of the div target dimentions
+        let ratio = 3; // 3 width = 1 height
         let win_width = d3.select('#viz3').node().getBoundingClientRect().width;
+        let win_height = win_width / ratio;
 
         // set the dimensions and margins of the graph
-        let margin = {top: 10, right: 30, bottom: 20, left: 30};
+        let margin = {top: 60, right: 30, bottom: 20, left: 30};
         let graph_width = win_width - margin.right - margin.left;
-        let graph_height = 400;
+        let graph_height = win_height - margin.top - margin.bottom;
 
-        // Good value found by trial and error
+        // Value to be left out to the left for the y-axis labels. Good value found by trial and error
         let axis_label_width = 200;
 
-        let sub_graphs = {};
+        // Definition of the full svg
+        let svg = d3.select("#viz3")
+            .append("svg")
+            .attr("viewBox", "0 0 " + win_width + " " + win_height);
 
         // Parse the Data
         d3.csv("../data_clean/a1_v3_stacked_chart_tot.csv", function(data) {
@@ -39,34 +45,57 @@
             let subgroups = data.columns.slice(1)
             let groups = d3.map(data, function(d){return(d['Circoscrizione Name'])}).keys()
 
-            // Getting the largest total value
+            // Ratio between tree and grouped columns width
+            let tree_group_ratio = 15; // 1 unit of width for a tree graph will be 10 in the Other and Total graphs
+
+            // Getting the largest total value to determine the width of the x-axis
             let range_max = d3.max(data, function(d) {return +d['Total']; });
-            let range_small = range_max / 3;
+            let range_small = range_max / tree_group_ratio;
 
             // 15: 1 unit for each tree then 5 for total and other columns
-            let sub_graph_width = (graph_width - axis_label_width - ((subgroups.length - 1) * margin.right)) / 15;
+            let sub_graph_width = (graph_width - axis_label_width - ((subgroups.length - 1) * margin.right)) / ((tree_group_ratio * 2) + 5);
 
             // color palette = one color per subgroup
             let color = d3.scaleOrdinal()
                 .domain(subgroups)
-                .range(['#e41a1c','#377eb8','#4daf4a','#964aaf','#4aafa3','#afa24a','#7d4aaf']);
+                .range(d3["schemeCategory10"]);
+
+            let shift_from_left = margin.left + axis_label_width;
+
+            // create a tooltip
+            let Tooltip = d3.select("#viz3")
+                .append("div")
+                .style("opacity", 0)
+                .attr("class", "tooltip")
+                .style("position", "absolute")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "2px")
+                .style("border-radius", "5px")
+                .style("font-size", "12px")
+                .style("pointer-events", "none")
+                .style("padding", "5px")
 
             // For each subgroup
             for (let i = 0; i < subgroups.length; i++) {
                 let subgroup = subgroups[i];
 
-                let mult = (i < subgroups.length - 2)? 1: 5;
+                let mult = (i < subgroups.length - 2)? 1: tree_group_ratio;
                 let sub_width = sub_graph_width * mult;
 
-                let left_axis_margin = (i === 0)? axis_label_width: 0
+                // Append 1 svg per tree and for other and for total
+                let sub_svg = svg.append("g")
+                    .attr("transform", "translate(" + shift_from_left + "," + margin.top + ")");
 
-                // Append an svg per tree and for total
-                let svg = d3.select("#viz3")
-                    .append("svg")
-                    .attr("width", sub_width + left_axis_margin + margin.right)
-                    .attr("height", graph_height + margin.top + margin.bottom)
-                    .append("g")
-                    .attr("transform", "translate(" + left_axis_margin + "," + margin.top + ")");
+                // Adding column titles
+                sub_svg.append("text")
+                    .attr("x", 5)
+                    .attr("y", -5)
+                    .attr("text-anchor", "start")
+                    .style("font-size", "12px")
+                    .style('fill', color(subgroup))
+                    .attr("transform", "rotate(-20)")
+                    .text(subgroup);
 
                 // Add X axis
                 let x = d3.scaleLinear()
@@ -76,49 +105,57 @@
                 // Add Y axis
                 let y = d3.scaleBand()
                     .domain(groups)
-                    .range([ graph_height, 0 ])
+                    .range([ 0, graph_height ])
                     .padding([0.2]);
-                let left_axis = d3.axisLeft(y)
-                svg.append("g").call((i === 0)? left_axis: left_axis.tickValues([]));
+                let left_axis = d3.axisLeft(y).tickSize(0)
+                sub_svg.call((i === 0)? left_axis: left_axis.tickValues([]));
+
+                // Three function that change the tooltip when user hover / move / leave a cell
+                let mouseover = function(d) {
+                    Tooltip.style("opacity", 1);
+                    d3.selectAll("#" + d['Circoscrizione Name'].replaceAll(' ','').replaceAll('.', ''))
+                        .style("opacity", 1);
+                }
+                let mousemove = function(d) {
+                    let tree_counts = "";
+                    for (let i = 0; i < subgroups.length; i++) {
+                        tree_counts = tree_counts + "<br> - " + subgroups[i] + ": " + d[subgroups[i]];
+                    }
+                    Tooltip.html("Trees counts in " + d['Circoscrizione Name'] + tree_counts)
+                        .style("left", (d3.event.pageX+20) + "px")
+                        .style("top", (d3.event.pageY) + "px");
+                }
+                let mouseleave = function(d) {
+                    Tooltip.style("opacity", 0);
+                    d3.selectAll("#" + d['Circoscrizione Name'].replaceAll(' ','').replaceAll('.', ''))
+                        .style("opacity", 0.8);
+                }
 
                 // Add subgroup data
-                svg.selectAll("mybar")
+                sub_svg.selectAll("mybar")
                     .data(data)
                     .enter()
                     .append("rect")
-                    .attr("x", function(d) { return 0; })
+                    .attr("id", function(d) { return d['Circoscrizione Name'].replaceAll(' ','').replaceAll('.', ''); })
+                    .attr("x", 0)
                     .attr("y", function(d) { return y(d['Circoscrizione Name']); })
-                    .attr("width", function(d) { return x(d[subgroup]); })
                     .attr("height", y.bandwidth())
+                    .on("mouseover", mouseover)
+                    .on("mousemove", mousemove)
+                    .on("mouseleave", mouseleave)
                     .attr("fill", color(subgroup))
+                    .style("opacity", 0.8)
+                    .transition()
+                    .ease(d3.easeLinear)
+                    .duration(500)
+                    .delay(function(d,i){ return i * 50;})
+                    .attr("width", function(d) { return x(d[subgroup]); });
 
-                // Sub graphs
-                sub_graphs[subgroup] = svg;
+                // Finalize the subgroup iteration by adding the width of the subgraph to the shift from the left var
+                shift_from_left = shift_from_left + sub_width + margin.right;
             }
         });
-                /*
-        function set_width() {
-            let win_width = d3.select('#viz3').node().getBoundingClientRect().width;
-            let graph_width = win_width - margin.right - margin.left;
 
-            for (var sub_g in sub_graphs) {
-
-
-                currentWidth = parseInt(d3.select('#div_basicResize').style('width'), 10)
-                Svg.attr("width", currentWidth)
-
-                // Update the X scale and Axis (here the 20 is just to have a bit of margin)
-                x.range([ 20, currentWidth-20 ]);
-                xAxis.call(d3.axisBottom(x))
-
-                // Add the last information needed for the circles: their X position
-                myCircles.attr("cx", function(d){ return x(d)})
-            }
-        }
-
-                 */
-
-        //window.addEventListener('resize', set_width );
     </script>
 
 </body>
