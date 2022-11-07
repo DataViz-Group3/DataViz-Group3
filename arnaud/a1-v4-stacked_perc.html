@@ -4,26 +4,23 @@
     <meta charset="UTF-8">
     <script src="https://d3js.org/d3.v4.js"></script>
     <link rel="stylesheet" href="../static/css/custom_style.css">
-
-
-
-    <title>Assignment 1 - Viz 2</title>
+    <title>Assignment 1 - Viz 4</title>
 </head>
 <body>
 
     <div class="assignment-heading">
-        <h1>Assignment 1 - viz 2</h1>
-        <h2>Stacked chart of top n trees in all circoscrizione</h2>
+        <h1>Assignment 1 - viz 4</h1>
+        <h2>Stacked chart of top n trees as percentages</h2>
     </div>
 
-    <div id="viz2" class="graph"></div>
+    <div id="viz4" class="graph"></div>
 
     <script>
         // https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
 
         // Definition of the div target dimentions
         let ratio = 2; // 3 width = 1 height
-        let win_width = d3.select('#viz2').node().getBoundingClientRect().width;
+        let win_width = d3.select('#viz4').node().getBoundingClientRect().width;
         let win_height = win_width / ratio;
 
         // set the dimensions and margins of the graph
@@ -39,17 +36,19 @@
         }
 
         // append the svg object to the body of the page
-        let svg = d3.select("#viz2")
+        let svg = d3.select("#viz4")
             .append("svg")
             .attr("viewBox", "0 0 " + win_width + " " + win_height)
             .append("g")
             .attr("transform", "translate(" + (margin.left + axis_label_width) + "," + margin.top + ")");
 
         // Parse the Data
-        d3.csv("../data_clean/a1_v2_stacked_chart.csv", function(data) {
+        d3.csv("../data_clean/a1_v4_stacked_chart_perc.csv", function(data) {
+
+            //data = data.slice(0, 5);
 
             // Subgroups (trees, other and total), groups (circoscrizione)
-            let subgroups = data.columns.slice(1)
+            let subgroups = data.columns.slice(1,7)
             let groups = d3.map(data, function(d){return(d['Circoscrizione Name'])}).keys()
 
             let max_width = d3.max(data, function(d) {
@@ -64,9 +63,11 @@
             let x = d3.scaleLinear()
                 .domain([0, max_width])
                 .range([0, graph_width - axis_label_width]);
+            /*
             svg.append("g")
                 .attr("transform", "translate(0," + graph_height + ")")
                 .call(d3.axisBottom(x).tickSizeOuter(0));
+             */
 
             // Add Y axis
             let y = d3.scaleBand()
@@ -143,7 +144,7 @@
                 // enter a second time = loop subgroup per subgroup to add all rectangles
                 .data(function(d) { return d; })
                 .enter().append("text")
-                .text(function (d) { return d[1] - d[0]; })
+                .text(function (d) { return Math.round(d[1] - d[0], 1) + "%"; })
                 .attr("y", function(d) { return y(d.data['Circoscrizione Name']) + (y.bandwidth() / 2) + 3; })
                 .attr("height", y.bandwidth())
                 .attr("width",function(d) { return x(d[1]) - x(d[0]); })
