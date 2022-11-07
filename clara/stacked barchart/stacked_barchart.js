@@ -1,8 +1,8 @@
 function main() {
     // set the dimensions and margins of the graph
-    var margin = {top: 100, right: 0, bottom: 20, left: 50},
+    var margin = {top: 20, right: 0, bottom: 20, left: 50},
         width = 1450 - margin.left - margin.right,
-        height = 650 - margin.top - margin.bottom;
+        height = 550 - margin.top - margin.bottom;
 
 
     var svg = d3.select("#my_dataviz")
@@ -13,11 +13,6 @@ function main() {
     .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-    svg.append("text")
-    .attr("x", 0)
-    .attr("y", -40)
-    .attr("font-size", "24px")
-	.text("Stacked Barchart")
 
 			
     d3.csv("../../data_clean/a1_v2_stacked_chart.csv", function(data) {
@@ -39,7 +34,7 @@ function main() {
         svg.append("g")
             .append("text")
             .attr("x", 1400)
-            .attr("y", 550)
+            .attr("y", 530)
             .attr('text-anchor', 'end')
             .attr('stroke', 'black')
             .text("Zone")
@@ -59,9 +54,10 @@ function main() {
             .text('Count');
 
         // color palette = one color per subgroup
+
         var color = d3.scaleOrdinal()
             .domain(subgroups)
-            .range(["green", "yellow", "blue", "red", "purple", "grey"])
+            .range(d3["schemeCategory10"]);
 
         //stack the data? --> stack per subgroup
         var stackedData = d3.stack()
@@ -83,6 +79,7 @@ function main() {
             .attr("y", function(d) { return y(d[1]); })
             .attr("height", function(d) { return y(d[0]) - y(d[1]); })
             .attr("width",x.bandwidth())
+            
 
         var legend = svg.append("g")
             .attr("font-family", "sans-serif")
@@ -105,6 +102,10 @@ function main() {
             .attr("x", width - 55)
             .attr("y", -287)
             .text(function(d) { return d; });
+    		d3.select(this).attr('class','highlight')
+
       
 })
+
+
 }

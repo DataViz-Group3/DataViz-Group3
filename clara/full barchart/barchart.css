@@ -14,6 +14,12 @@
 	border-radius: 10px;
 }
 
+.assignment-heading {
+
+	position: relative;
+	align-items: center;
+	text-align: center;
+  }
 
 #tooltip.hidden{
 	display: none;

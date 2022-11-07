@@ -14,6 +14,13 @@
 	border-radius: 10px;
 }
 
+.assignment-heading {
+
+	position: relative;
+	align-items: center;
+	text-align: center;
+  }
+
 #other{
 	position: absolute;
 	right: 400px ;

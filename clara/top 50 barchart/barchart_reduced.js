@@ -4,12 +4,6 @@ function main() {
         width = svg.attr("width") - margin,
         height = svg.attr("height") - margin;
 
-    svg.append("text")
-       .attr("transform", "translate(100,0)")
-       .attr("x", 0)
-       .attr("y", 50)
-       .attr("font-size", "24px")
-	   .text("Tree Abundance")
 
     var xScale = d3.scaleBand().range([0, width]).padding(0.4),
         yScale = d3.scaleLinear().range([height, 0]);
@@ -44,7 +38,7 @@ function main() {
 		g.append("g")
 		.append("text")
 	 	.attr("x", 1300)
-		.attr("y", 450)
+		.attr("y", 350)
 		.attr('text-anchor', 'end')
 		.attr('stroke', 'black')
 		.text("Name")
