@@ -1,7 +1,7 @@
 var total = 0;
-var width,
-  height,
-  widthSquares = 20,
+var width = 15;
+ var height,
+  widthSquares = 15,
   heightSquares = 5,
   squareSize = 25,
   squareValue = 0,
@@ -45,7 +45,7 @@ d3.csv("../../data_clean/a1_v5_waffle_chart.csv", function (error, data) {
     squareValue = total / (widthSquares * heightSquares);
     chart_data.forEach(function (d, i) {
       d[value_title] = +d[value_title];
-      d.units = Math.floor(d[value_title] / squareValue);
+      d.units = Math.round(d[value_title] / squareValue);
       theData = theData.concat(
         Array(d.units + 1).join(1).split('').map(function () {
           return {
@@ -64,6 +64,7 @@ d3.csv("../../data_clean/a1_v5_waffle_chart.csv", function (error, data) {
 
 
     var waffle = d3.select("body").append("svg")
+    .attr("width", "363px")
       .append("g").attr("class", value_title)
       .selectAll("div")
       .data(theData)
