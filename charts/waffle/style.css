@@ -18,3 +18,10 @@ svg{
 
   margin: 10px 10px 0px 10px;
 }
+
+.assignment-heading {
+
+	position: relative;
+	align-items: center;
+	text-align: center;
+  }
