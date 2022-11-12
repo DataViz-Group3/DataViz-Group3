@@ -56,10 +56,15 @@ console.log(data);
     }
 
 
+    data.forEach(function(d){
+      d['Height (m)'] = +d['Height (m)'];
+      d['Carbon Storage (kg)'] = +d['Carbon Storage (kg)'];
+  });
+    
 
   // Add X axis
   var x = d3.scaleLinear()
-    .domain([1, 20])
+   .domain([0, d3.max(data,function(d){ return d['Height (m)'];})])
     .range([ 0, width ])
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
@@ -68,7 +73,7 @@ console.log(data);
 
   // Add Y axis
   var y = d3.scaleLinear()
-    .domain([1, 100])
+    .domain([0, d3.max(data,function(d){ return d['Carbon Storage (kg)'];})])
     .range([ height, 0])
     .nice()
   svg.append("g")
