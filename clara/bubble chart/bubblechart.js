@@ -71,31 +71,40 @@ function main() {
             .range(d3["schemeCategory10"]);
 
 
+
         var tooltip = d3.select("#my_dataviz")
             .append("div")
+            .style("position", "absolute")
             .style("opacity", 0)
-            .attr("class", "tooltip")
-            .style("background-color", "black")
+            .style("background-color", "rgb(211,211,211)")
             .style("border-radius", "5px")
             .style("padding", "10px")
-            .style("color", "white")
+            .attr("class", "tooltip")
+            .style("width", "auto")
+            .style("height", "auto")
         
           // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
         var showTooltip = function(d) {
+            var xPos = parseFloat(d3.select(this).attr('cx'));
+            var yPos = parseFloat(d3.select(this).attr('cy'));
             tooltip
               .transition()
               .duration(200)
             tooltip
               .style("opacity", 1)
-              .html("Canopy Cover(m2): " + d['Canopy Cover (m2)'])
-              .style("left", (d3.mouse(this)[0]+30) + "px")
-              .style("top", (d3.mouse(this)[1]+30) + "px")
+              .html("Canopy Cover (m2): " + d['Canopy Cover (m2)']+ '<br> Carbon Storage (kg): '+ d['Carbon Storage (kg)'] +  '<br> Tree Height (m): '+ d['Height (m)'])
+              .style("left", xPos+margin.left +15 + "px")
+              .style("top", yPos+153 + "px")
         }
           
         var moveTooltip = function(d) {
+            var xPos = parseFloat(d3.select(this).attr('cx'));
+            var yPos = parseFloat(d3.select(this).attr('cy'));
             tooltip
-              .style("left", (d3.mouse(this)[0]+30) + "px")
-              .style("top", (d3.mouse(this)[1]+30) + "px")
+            .style("opacity", 1)
+            .html("Canopy Cover (m2): " + d['Canopy Cover (m2)']+ '<br> Carbon Storage (kg): '+ d['Carbon Storage (kg)'] +  '<br> Tree Height (m): '+ d['Height (m)'])
+            .style("left", xPos+margin.left +15 + "px")
+            .style("top", yPos+153 + "px")
         }
           
         var hideTooltip = function(d) {
@@ -104,16 +113,7 @@ function main() {
               .duration(200)
               .style("opacity", 0)
         }
-        
-        
-
-
-
-        
-        
-          // ---------------------------//
-          //       CIRCLES              //
-          // ---------------------------//
+  
         
           // Add dots
         svg.append('g')

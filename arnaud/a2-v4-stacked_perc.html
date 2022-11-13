@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://d3js.org/d3.v4.js"></script>
+    <link rel="stylesheet" href="../static/css/custom_style.css">
+    <title>Assignment 2 - Viz 4</title>
+</head>
+<body>
+
+    <div class="assignment-heading">
+        <h1>Assignment 2 - viz 4</h1>
+        <h2>Scatter plot with each subplot being a tree species comparing the tree size to its CO2 storage.</h2>
+    </div>
+
+    <div id="viz4" class="graph"></div>
+
+    <script>
+        // https://d3-graph-gallery.com/graph/barplot_stacked_basicWide.html
+
+        // Definition of the div target dimentions
+        let ratio = 3/1.5; // 3 width = 2 height
+        let win_width = d3.select('#viz4').node().getBoundingClientRect().width;
+        let win_height = win_width / ratio;
+
+        // set the dimensions and margins of the graph
+        let margin = {top: 40, right: 40, bottom: 40, left: 40};
+        let graph_width = win_width - margin.right - margin.left;
+        let graph_height = win_height - margin.top - margin.bottom;
+
+        let normalize_name = function (name) {
+            return name.replaceAll(' ','').replaceAll('.', '').replaceAll('\'', '');
+        }
+
+        // Parse the Data
+        d3.csv("../data_clean/a2_v4_trees_size_carbon_6.csv", function(data) {
+
+            const x_axis_name = 'Height (m)';
+            const y_axis_name = 'Carbon Storage (kg)';
+
+            const x_max = d3.max(data, function(d) { return Number(d[x_axis_name]); });
+            const y_max = d3.max(data, function(d) { return Number(d[y_axis_name]); });
+            console.log(x_max);
+            console.log(y_max);
+
+            // group the data: I want to draw one line per group
+            const subgroup_data = d3.nest() // nest function allows to group the calculation per level of a factor
+                .key(function(d) { return d.Name;})
+                .entries(data);
+
+            // All the unique keys (trees)
+            const allKeys = subgroup_data.map(function(d){return d.key})
+
+            // Define subgraph width and height
+            const sub_width = (graph_width / 3) - margin.left - margin.right;
+            const sub_height = (graph_height / 2) - margin.top - margin.bottom;
+
+            // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
+            let svg = d3.select("#viz4")
+                .selectAll("uniqueChart")
+                .data(subgroup_data)
+                .enter()
+                .append("svg")
+                .attr("width", sub_width + margin.left + margin.right)
+                .attr("height", sub_height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            // Add X axis
+            const x = d3.scaleLinear()
+                .domain([0, x_max])
+                .range([ 0, sub_width ]);
+            svg.append("g")
+                .attr("transform", "translate(0," + sub_height + ")")
+                .call(d3.axisBottom(x));
+
+            //Add Y axis
+            const y = d3.scaleLinear()
+                .domain([0, y_max])
+                .range([ sub_height, 0 ]);
+            svg.append("g")
+                .call(d3.axisLeft(y));
+
+            // color palette
+            const color = d3.scaleOrdinal()
+                .domain(allKeys)
+                .range(d3["schemeCategory10"]);
+
+            // Draw scatter data
+            svg.selectAll("circles")
+                .data(function(d){ return d.values; })
+                .enter()
+                .append("circle")
+                .attr("r", 1.5)
+                .attr("fill", function(d){ return color(d.Name) })
+                .attr("cx", function(d) { return x(d[x_axis_name]); })
+                .attr("cy", function(d) { return y(d[y_axis_name]); });
+
+            // Add titles
+            svg.append("text")
+                .attr("text-anchor", "start")
+                .attr("y", -10)
+                .attr("x", 0)
+                .text(function(d){ return(d.key)})
+                .style("fill", function(d){ return color(d.key) })
+
+
+
+            /*
+            // Add X axis
+            let x = d3.scaleLinear()
+                .domain([0, max_width])
+                .range([0, graph_width - axis_label_width]);
+
+            // Add Y axis
+            let y = d3.scaleBand()
+                .domain(groups)
+                .range([ 0, graph_height ])
+                .padding([0.2]);
+            svg.append("g")
+                .call(d3.axisLeft(y));
+
+            // color palette = one color per subgroup
+            let color = d3.scaleOrdinal()
+                .domain(subgroups)
+                .range(d3["schemeCategory10"]);
+
+            //stack the data? --> stack per subgroup
+            let stackedData = d3.stack().keys(subgroups)(data);
+
+            // Mouse over events
+            let mouseover = function(d) {
+                d3.selectAll("#" + normalize_name(d.key))
+                    .style("opacity", 1);
+                d3.selectAll("#info_" + normalize_name(d.key))
+                    .style("opacity", 1);
+            }
+            let mouseleave = function(d) {
+                d3.selectAll("#" + normalize_name(d.key))
+                    .style("opacity", 0.8);
+                d3.selectAll("#info_" + normalize_name(d.key))
+                    .style("opacity", 0);
+            }
+
+            for (let i=0; i<subgroups.length; i++) {
+                svg.append("g")
+                    .append("text")
+                    .attr("text-anchor", "start")
+                    .style("font-size", "12px")
+                    .style("fill", color(subgroups[i]))
+                    .text(subgroups[i])
+                    .attr("transform", "translate(" + (x(stackedData[i][0][0]) + 10) + ",0)rotate(-45)");
+            }
+
+            // Show the bars
+            svg.append("g")
+                .selectAll("g")
+                // Enter in the stack data = loop key per key = group per group
+                .data(stackedData)
+                .enter().append("g")
+                .attr("id", function(d) { return normalize_name(d.key); })
+                .attr("fill", function(d) { return color(d.key); })
+                .on("mouseover", mouseover)
+                .on("mouseleave", mouseleave)
+                .style("opacity", 0.8)
+                .selectAll("rect")
+                // enter a second time = loop subgroup per subgroup to add all rectangles
+                .data(function(d) { return d; })
+                .enter().append("rect")
+                .attr("x", function(d) { return x(d[0]); })
+                .attr("y", function(d) { return y(d.data['Circoscrizione Name']); })
+                .attr("height", y.bandwidth())
+                .attr("width",function(d) { return x(d[1]) - x(d[0]); });
+
+            svg.append("g")
+                .selectAll("g")
+                // Enter in the stack data = loop key per key = group per group
+                .data(stackedData)
+                .enter().append("g")
+                .attr("id", function(d) { return "info_" + normalize_name(d.key); })
+                .attr("text-anchor", "start")
+                .style("opacity", 0)
+                .style("font-size", "12px")
+                .style("fill", "white")
+                .style("pointer-events", "none")
+                .selectAll("infos")
+                // enter a second time = loop subgroup per subgroup to add all rectangles
+                .data(function(d) { return d; })
+                .enter().append("text")
+                .text(function (d) { return Math.round(d[1] - d[0], 1) + "%"; })
+                .attr("y", function(d) { return y(d.data['Circoscrizione Name']) + (y.bandwidth() / 2) + 3; })
+                .attr("height", y.bandwidth())
+                .attr("width",function(d) { return x(d[1]) - x(d[0]); })
+                .attr("x", function(d) {
+                    if (x(d[1]) - 10 > this.getComputedTextLength()) {
+                        return x(d[1]) - this.getComputedTextLength() - 5;
+                    }
+                    else {
+                        return 5;
+                    }
+                });
+
+             */
+        })
+
+    </script>
+
+</body>
+</html>
