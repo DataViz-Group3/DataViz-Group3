@@ -22,7 +22,7 @@
   }
 
 #other{
-	position: absolute;
+	position: relative;
 	right: 400px ;
 	top: 200px;
 	width: 80px;

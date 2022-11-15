@@ -1,20 +1,16 @@
-function main() {
+function drawChart_a1_v2() {
     // set the dimensions and margins of the graph
     var margin = {top: 20, right: 0, bottom: 20, left: 200},
         width = 1400 - margin.left - margin.right,
         height = 550 - margin.top - margin.bottom;
 
+    var svg = d3.select("#a1_v2")
+        .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var svg = d3.select("#secondAssignTask2")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
-
-
-			
     d3.csv("../../data_clean/a1_v2_stacked_chart.csv", function(data) {
 
         var subgroups = data.columns.slice(1)
@@ -63,7 +59,7 @@ function main() {
             .keys(subgroups)
             (data)
 
-        var tooltip = d3.select("#my_dataviz")
+        var tooltip = d3.select("#a1_v2")
         .append("div")
         .style("position", "absolute")
         .style("opacity", 0)
@@ -135,10 +131,12 @@ function main() {
             .attr("x", width - 55)
             .attr("y", -7)
             .text(function(d) { return d; });
-    		d3.select(this).attr('class','highlight')
+    		//d3.select(this).attr('class','highlight')
 
       
 })
 
 
 }
+
+drawChart_a1_v2()
