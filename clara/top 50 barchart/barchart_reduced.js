@@ -1,16 +1,20 @@
-function main() {
-	var svg = d3.select("svg"),
-        margin = 250,
-        width = svg.attr("width") - margin,
-        height = svg.attr("height") - margin;
+function drawChart_a1_v1() {
+	let margin = 250;
+	let tot_width = 1500;
+	let tot_height = 600;
+	let width = tot_width - margin;
+	let height = tot_height - margin;
 
+	let svg = d3.select("#a1_v1")
+			.append("svg")
+			.attr("width", tot_width)
+			.attr("height", tot_height);
 
-    var xScale = d3.scaleBand().range([0, width]).padding(0.4),
+    let xScale = d3.scaleBand().range([0, width]).padding(0.4),
         yScale = d3.scaleLinear().range([height, 0]);
 
-    var g = svg.append("g")
+    let g = svg.append("g")
             .attr("transform", "translate(" + 100 + "," + 100 + ")");
-
 			
     d3.csv("../../data_clean/a1_v1_tree_abundance.csv", function(data) {
  
@@ -18,8 +22,8 @@ function main() {
 			d.Count = +d.Count;
 		  });
 
-		other = data.slice(50, data.length);
-		sum = d3.sum(other, function(d){ return d.Count});
+		let other = data.slice(50, data.length);
+		let sum = d3.sum(other, function(d){ return d.Count});
 		  
 		data = data.slice(0, 50);
 
@@ -27,46 +31,46 @@ function main() {
         yScale.domain([0, d3.max(data, function(d) { return d.Count; })]);
 
         g.append("g")
-         .attr("transform", "translate(0," + height + ")")
-         .call(d3.axisBottom(xScale))
-		 .selectAll("text")  
-		 .style("text-anchor", "end")
-		 .attr("dx", "-.8em")
-		 .attr("dy", "-.6em")
-		 .attr("transform", "rotate(-65)" );
+			.attr("transform", "translate(0," + height + ")")
+			.call(d3.axisBottom(xScale))
+			.selectAll("text")
+			.style("text-anchor", "end")
+			.attr("dx", "-.8em")
+			.attr("dy", "-.6em")
+			.attr("transform", "rotate(-65)" );
 
 		g.append("g")
-		.append("text")
-	 	.attr("x", 1300)
-		.attr("y", 350)
-		.attr('text-anchor', 'end')
-		.attr('stroke', 'black')
-		.text("Name")
+			.append("text")
+			.attr("x", 1300)
+			.attr("y", 350)
+			.attr('text-anchor', 'end')
+			.attr('stroke', 'black')
+			.text("Name")
 
         g.append("g")
-         .call(d3.axisLeft(yScale).tickFormat(function(d){return d;}))
-	 .append("text")
-	 .attr("transform", "rotate(-90)")
-	 .attr("y", 10)
-	 .attr('dy', '-5em')
-	 .attr('text-anchor', 'end')
-	 .attr('stroke', 'black')
-	 .text('Count')
+			.call(d3.axisLeft(yScale).tickFormat(function(d){return d;}))
+			.append("text")
+			.attr("transform", "rotate(-90)")
+			.attr("y", 10)
+			.attr('dy', '-5em')
+			.attr('text-anchor', 'end')
+			.attr('stroke', 'black')
+			.text('Count')
 
         g.selectAll(".bar")
-         .data(data)
-         .enter().append("rect")
-         .attr("class", "bar")
-	 .on("mouseover", onMouseOver) // Add listener for event
-	 .on("mouseout", onMouseOut)
-         .attr("x", function(d) { return xScale(d.Name); })
-         .attr("y", function(d) { return yScale(d.Count); })
-         .attr("width", xScale.bandwidth())
-	 .transition()
-	 .ease(d3.easeLinear)
-	 .duration(500)
-	 .delay(function(d,i){ return i * 50})
-         .attr("height", function(d) { return height - yScale(d.Count); });
+			.data(data)
+			.enter().append("rect")
+			.attr("class", "bar")
+			.on("mouseover", onMouseOver) // Add listener for event
+			.on("mouseout", onMouseOut)
+			.attr("x", function(d) { return xScale(d.Name); })
+			.attr("y", function(d) { return yScale(d.Count); })
+			.attr("width", xScale.bandwidth())
+			.transition()
+			.ease(d3.easeLinear)
+			.duration(500)
+			.delay(function(d,i){ return i * 50})
+			.attr("height", function(d) { return height - yScale(d.Count); });
 
 	d3.select('#other')
 		.html(`
@@ -79,8 +83,8 @@ function main() {
 
 	function onMouseOver(d, i) {
 		// Get bar's xy values, ,then augment for the tooltip
-		var xPos = parseFloat(d3.select(this).attr('x')) + xScale.bandwidth() / 2;
-		var yPos = parseFloat(d3.select(this).attr('y')) / 2 + height / 2
+		let xPos = d3.event.pageX + 10;
+		let yPos = d3.event.pageY - 10;
 
 		// Update Tooltip's position and value
 		d3.select('#tooltip')
@@ -92,7 +96,6 @@ function main() {
 			`);
 		
 		d3.select('#tooltip').classed('hidden', false);
-
 
 		d3.select(this).attr('class','highlight')
 		d3.select(this)
@@ -117,3 +120,5 @@ function main() {
 		d3.select('#tooltip').classed('hidden', true);
 	}
 }
+
+drawChart_a1_v1()

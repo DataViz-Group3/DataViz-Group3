@@ -26,6 +26,7 @@
     <!-- CSS -->
     <link rel="stylesheet" href="scratch_1.css">
     <link rel="stylesheet" href="scratch_2.css">
+    <link rel="stylesheet" href="clara/top 50 barchart/barchart_reduced.css">
 
     <!--D3.js -->
     <script src="https://d3js.org/d3.v4.js"></script>
@@ -46,57 +47,64 @@
     <br>
 
     <div class="w3-row-padding w3-margin-bottom" id="#secondAssignTask1">
+
+        <!---------------------------------------------------------------------------------------->
         <br>
         <h2><b>Simple Bar Chart</b></h2>
         <h4>
             This plot uses a straightforward bar chart to show how common the top fifty tree species are in the Trento municipality.<br>
         </h4>
 
-
-        <br>
-        <br>
-
-        <div class="taskContainer" id="secondAssignTask2"></div>
+        <div class="taskContainer" id="a1_v1">
+            <div id="tooltip" class="hidden"></div>
+            <div id="other"></div>
+        </div>
+        <script src="clara/top 50 barchart/barchart_reduced.js"></script>
 
         <hr>
         <br>
 
+        <!---------------------------------------------------------------------------------------->
         <h2><b>Stacked Bar Chart</b></h2>
         <h4>
             Similar to the previous graphic, this one displays the prevalence of the top five tree species in Trento Municipality <br> throughout the city's twelve different neighborhoods.
         </h4>
 
-        <script src="clara/stacked barchart/stacked_barchart.js" onload="main()"></script>
+        <div class="taskContainer" id="a1_v2"></div>
+        <script src="clara/stacked barchart/stacked_barchart.js"></script>
 
-
-
-        <div class="taskContainer" id="#secondAssignTask3"></div>
         <hr>
         <br>
 
+        <!---------------------------------------------------------------------------------------->
         <h2><b>Stacked Bar Chart with Small Multiples</b></h2>
         <h4>
             This plot is a stacked bar chart that is separated into small multiples, and in the right-most part,<br> you can find the total number of that special tree species in the related area.
         </h4>
-        <div class="taskContainer" id="#secondAssignTask4"></div>
+        <div class="taskContainer" id="a1_v3"></div>
+        <script src="arnaud/a1-v3-stacked_tot.js"></script>
 
         <hr>
         <br>
 
+        <!---------------------------------------------------------------------------------------->
         <h2><b>Stacked Bar Chart 100%</b></h2>
         <h4>
             This stacked graphic shows the top five tree species along with the remaining tree species as a percentage of the total.
         </h4>
 
-        <div class="taskContainer" id="#secondAssignTask5" ></div>
+        <div class="taskContainer" id="a1_v4" ></div>
+        <script src="arnaud/a1-v4-stacked_perc.js"></script>
+
         <hr>
         <br>
 
+        <!---------------------------------------------------------------------------------------->
         <h2><b>Waffle Chart</b></h2>
         <h4>
             The waffle chart shows the contribution of each tree species composing parts of a whole in the 12 different regions of the Trento.
         </h4>
-        <div class="taskContainer"></div>
+        <div class="taskContainer" id="a1_v5"></div>
     </div>
 
 
