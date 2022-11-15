@@ -5,7 +5,7 @@ function main() {
         height = 600 - margin.top - margin.bottom;
 
 
-    var svg = d3.select("#my_dataviz")
+    var svg = d3.select("#secondAssignTask5")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -72,7 +72,7 @@ function main() {
 
 
 
-        var tooltip = d3.select("#my_dataviz")
+        var tooltip = d3.select("#secondAssignTask5")
             .append("div")
             .style("position", "absolute")
             .style("opacity", 0)
@@ -85,27 +85,19 @@ function main() {
         
           // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
         var showTooltip = function(d) {
-            var xPos = parseFloat(d3.select(this).attr('cx'));
-            var yPos = parseFloat(d3.select(this).attr('cy'));
+            //var xPos = parseFloat(d3.select(this).attr('cx'));
+            //var yPos = parseFloat(d3.select(this).attr('cy'));
             tooltip
               .transition()
-              .duration(200)
+              .duration(500)
             tooltip
               .style("opacity", 1)
               .html("Canopy Cover (m2): " + d['Canopy Cover (m2)']+ '<br> Carbon Storage (kg): '+ d['Carbon Storage (kg)'] +  '<br> Tree Height (m): '+ d['Height (m)'])
-              .style("left", xPos+margin.left +15 + "px")
-              .style("top", yPos+153 + "px")
+              .style("left", (d3.event.pageX) + "px")
+              .style("top", (d3.event.pageY - 28) + "px")
         }
           
-        var moveTooltip = function(d) {
-            var xPos = parseFloat(d3.select(this).attr('cx'));
-            var yPos = parseFloat(d3.select(this).attr('cy'));
-            tooltip
-            .style("opacity", 1)
-            .html("Canopy Cover (m2): " + d['Canopy Cover (m2)']+ '<br> Carbon Storage (kg): '+ d['Carbon Storage (kg)'] +  '<br> Tree Height (m): '+ d['Height (m)'])
-            .style("left", xPos+margin.left +15 + "px")
-            .style("top", yPos+153 + "px")
-        }
+
           
         var hideTooltip = function(d) {
             tooltip
@@ -128,7 +120,6 @@ function main() {
             .style("fill", function (d) { return color(d.Name); } )
             // -3- Trigger the functions for hover
             .on("mouseover", showTooltip )
-            .on("mousemove", moveTooltip )
             .on("mouseleave", hideTooltip )
         
                   // ---------------------------//
