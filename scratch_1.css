@@ -1,0 +1,80 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:wght@100&display=swap');
+
+body {
+    background-color: #e0e0d1;
+    color: #5c8a8a;
+
+}
+
+section {
+    padding: 100px 0px;
+}
+
+.responsive {
+    height: 100%;
+    width: auto;
+}
+
+
+h1 {
+    font-family: 'Roboto Slab', serif;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 45px;
+    margin: 0 0 24px;
+
+}
+
+
+h2, h3, h4 {
+    font-family: 'Roboto Slab', serif;
+    text-align: center;
+    margin: 0 0 24px;
+
+}
+
+
+#secondAssignPageContent {
+
+    overflow-x: auto;
+    z-index: 2;
+    margin-top: 15px;
+
+}
+
+#secondAssignTitle {
+    color: 	#476b50;
+    padding-top: 22px;
+    margin-top: 90px;
+}
+
+.taskContainer {
+    display: flex;
+    justify-content: center;
+}
+
+#secondAssignTask1{
+    justify-content: center;
+    text-align: center;
+}
+
+#secondAssignTask2{
+    justify-content: center;
+    text-align: center;
+}
+
+#secondAssignTask3{
+    justify-content: center;
+    text-align: center;
+}
+
+#secondAssignTask4{
+    justify-content: center;
+    text-align: center;
+}
+
+#secondAssignTask5{
+    justify-content: center;
+    text-align: center;
+}
