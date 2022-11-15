@@ -5,7 +5,7 @@ function main() {
         height = 550 - margin.top - margin.bottom;
 
 
-    var svg = d3.select("#my_dataviz")
+    var svg = d3.select("#secondAssignTask2")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
