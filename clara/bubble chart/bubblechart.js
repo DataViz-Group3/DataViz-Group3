@@ -5,7 +5,7 @@ function main() {
         height = 600 - margin.top - margin.bottom;
 
 
-    var svg = d3.select("#secondAssignTask5")
+    var svg = d3.select("#a2_v5")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -72,7 +72,7 @@ function main() {
 
 
 
-        var tooltip = d3.select("#secondAssignTask5")
+        var tooltip = d3.select("#a2_v5")
             .append("div")
             .style("position", "absolute")
             .style("opacity", 0)
@@ -122,9 +122,6 @@ function main() {
             .on("mouseover", showTooltip )
             .on("mouseleave", hideTooltip )
         
-                  // ---------------------------//
-          //       HIGHLIGHT GROUP      //
-          // ---------------------------//
         
           // What to do when one group is hovered
           var highlight = function(d){
@@ -138,10 +135,7 @@ function main() {
         var noHighlight = function(d,i){
             d3.selectAll(".bubbles").style("opacity", 1)
         }
-        
-            // ---------------------------//
-            //       LEGEND              //
-            // ---------------------------//
+    
         
         
             // Add one dot in the legend for each name.

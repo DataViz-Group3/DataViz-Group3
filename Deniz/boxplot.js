@@ -1,6 +1,6 @@
 // Boxplot
 
-d3.json("boxplot.json").then(function (sumstat) {
+d3.json("scratch.json",function (sumstat) {
 
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 30, bottom: 60, left: 180 },
@@ -8,7 +8,7 @@ d3.json("boxplot.json").then(function (sumstat) {
         height = 600 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
-    var svg = d3.select("#graph2")
+    var svg = d3.select("#a2_v2")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -106,7 +106,7 @@ d3.json("boxplot.json").then(function (sumstat) {
         .style("width", 80)
 
     // add individual points (outliers) with jitter: we need non-aggregated data
-    d3.csv("boxplot.csv").then(function (data) {
+    d3.csv("boxplot.csv",function (data) {
         // keep only the outliers
         data = data.filter(d => {
             return parseFloat(d.height) > sumstat[sumstat.findIndex(t => t.key == d.name)].value.max ||

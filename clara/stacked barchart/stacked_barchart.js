@@ -11,6 +11,8 @@ function drawChart_a1_v2() {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+        
+
     d3.csv("../../data_clean/a1_v2_stacked_chart.csv", function(data) {
 
         var subgroups = data.columns.slice(1)
@@ -68,15 +70,16 @@ function drawChart_a1_v2() {
         .style("height", "auto")
         // Three function that change the tooltip when user hover / move / leave a cell
         var mouseover = function(d) {
-            var xPos = parseFloat(d3.select(this).attr('x'));
-            var yPos = parseFloat(d3.select(this).attr('y'));
+            let xPos = d3.event.pageX + 10;
+            let yPos = d3.event.pageY;    
             var subgroupName = d3.select(this.parentNode).datum().key;
             var subgroupValue = d.data[subgroupName];
             tooltip
                 .html(subgroupName + ": " + subgroupValue)
                 .style("opacity", 1)
-                .style('left', xPos+margin.left +15+ 'px')
-                .style('top', yPos+153 + 'px')
+                .style('left', xPos + 'px')
+                .style('top', yPos + 'px')
+                .style('color', 'black')
         }
         
         
