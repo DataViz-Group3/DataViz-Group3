@@ -4,8 +4,8 @@ d3.json("scratch.json",function (sumstat) {
 
     // set the dimensions and margins of the graph
     var margin = { top: 10, right: 30, bottom: 60, left: 180 },
-        width = 700 - margin.left - margin.right,
-        height = 600 - margin.top - margin.bottom;
+        width = 600 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
     var svg = d3.select("#a2_v2")
@@ -55,7 +55,7 @@ d3.json("scratch.json",function (sumstat) {
         .attr("x2", function (d) { return (x(d.value.max)) })
         .attr("y1", function (d) { return (y(d.key) + y.bandwidth() / 2) })
         .attr("y2", function (d) { return (y(d.key) + y.bandwidth() / 2) })
-        .attr("stroke", "black")
+        .attr("stroke", "#ff5500")
         .style("width", 40)
     // rectangle for the main box
     svg.selectAll("boxes")
@@ -66,8 +66,8 @@ d3.json("scratch.json",function (sumstat) {
         .attr("width", function (d) { return (x(d.value.q3) - x(d.value.q1)) })
         .attr("y", function (d) { return y(d.key); })
         .attr("height", y.bandwidth())
-        .attr("stroke", "black")
-        .style("fill", "#69b3a2")
+        .attr("stroke", "#ff5500")
+        .style("fill", "#ff9966")
         .style("opacity", 0.3)
 
 
@@ -80,8 +80,8 @@ d3.json("scratch.json",function (sumstat) {
         .attr("y2", function (d) { return (y(d.key) + y.bandwidth()) })
         .attr("x1", function (d) { return (x(d.value.median)) })
         .attr("x2", function (d) { return (x(d.value.median)) })
-        .attr("stroke", "black")
-        .style("width", 80)
+        .attr("stroke", "#b33c00")
+        .style("width", 90)
 
     // add small details
     svg.selectAll("detailLines")
@@ -92,8 +92,9 @@ d3.json("scratch.json",function (sumstat) {
         .attr("y2", function (d) { return (y(d.key) + y.bandwidth()) - 15 })
         .attr("x1", function (d) { return (x(d.value.max)) })
         .attr("x2", function (d) { return (x(d.value.max)) })
-        .attr("stroke", "black")
-        .style("width", 80)
+        .attr("stroke", "#b33c00")
+        .style("width", 90)
+
     svg.selectAll("detailLines")
         .data(sumstat)
         .enter()
@@ -102,8 +103,8 @@ d3.json("scratch.json",function (sumstat) {
         .attr("y2", function (d) { return (y(d.key) + y.bandwidth()) - 15 })
         .attr("x1", function (d) { return (x(d.value.min)) })
         .attr("x2", function (d) { return (x(d.value.min)) })
-        .attr("stroke", "black")
-        .style("width", 80)
+        .attr("stroke", "#b33c00")
+        .style("width", 90)
 
     // add individual points (outliers) with jitter: we need non-aggregated data
     d3.csv("boxplot.csv",function (data) {
@@ -121,6 +122,6 @@ d3.json("scratch.json",function (sumstat) {
             .attr("cy", function (d) { return (y(d.name) + (y.bandwidth() / 2) - jitterWidth / 2 + Math.random() * jitterWidth) })
             .attr("r", 2)
             .style("fill", "white")
-            .attr("stroke", "black")
+            .attr("stroke", "#4d4dff")
     });
 })
