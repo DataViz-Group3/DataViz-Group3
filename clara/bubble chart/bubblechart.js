@@ -123,7 +123,7 @@ function drawChart_a2_v5() {
         // ---------------------------//
 
         // What to do when one group is hovered
-        var highlight = function(d){
+        var highlight = function(event, d){
             // reduce opacity of all groups
             d3.selectAll(".bubbles").style("opacity", 0)
             // expect the one that is hovered
@@ -131,7 +131,7 @@ function drawChart_a2_v5() {
         }
 
         // And when it is not hovered anymore
-        var noHighlight = function(d,i){
+        var noHighlight = function(event, d){
             d3.selectAll(".bubbles").style("opacity", 1)
         }
 
