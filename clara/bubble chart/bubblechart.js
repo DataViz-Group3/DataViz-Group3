@@ -1,4 +1,4 @@
-function main() {
+function drawChart_a2_v5() {
     // set the dimensions and margins of the graph
     var margin = {top: 10, right: 20, bottom: 40, left: 50},
         width = 1400 - margin.left - margin.right,
@@ -122,6 +122,9 @@ function main() {
             .on("mouseover", showTooltip )
             .on("mouseleave", hideTooltip )
         
+                  // ---------------------------//
+          //       HIGHLIGHT GROUP      //
+          // ---------------------------//
         
           // What to do when one group is hovered
           var highlight = function(d){
@@ -135,7 +138,10 @@ function main() {
         var noHighlight = function(d,i){
             d3.selectAll(".bubbles").style("opacity", 1)
         }
-    
+        
+            // ---------------------------//
+            //       LEGEND              //
+            // ---------------------------//
         
         
             // Add one dot in the legend for each name.
@@ -166,3 +172,5 @@ function main() {
                 .on("mouseleave", noHighlight)
     });
 }
+
+drawChart_a2_v5();
