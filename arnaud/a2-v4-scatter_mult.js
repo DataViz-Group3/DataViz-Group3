@@ -40,18 +40,18 @@ function drawChart_a2_v4() {
         .attr("value", function (d) { return d; }) // corresponding value returned by the button
 
     // Parse the Data
-    d3.csv("../data_clean/a2_v4_trees_size_carbon_6.csv", function(data) {
+    d3.csv("../data_clean/a2_v4_trees_size_carbon_6.csv").then( function(data) {
 
         const default_x_axis_name = 'Height (m)';
         const default_y_axis_name = 'Carbon Storage (kg)';
 
         // group the data: I want to draw one line per group
-        const subgroup_data = d3.nest() // nest function allows to group the calculation per level of a factor
-            .key(function(d) { return d.Name;})
-            .entries(data);
+        const subgroup_data = d3.groups(data, d => d.Name)//.nest() // nest function allows to group the calculation per level of a factor
+            //.key(function(d) { return d.Name;})
+            //.entries(data);
 
         // All the unique keys (trees)
-        const allKeys = subgroup_data.map(function(d){ return d.key; })
+        const allKeys = subgroup_data.map( d => d[0] );
 
         // Define subgraph width and height
         const sub_win_width = graph_width / 3;
@@ -61,18 +61,18 @@ function drawChart_a2_v4() {
 
         // Add an svg element for each group. The will be one beside each other and will go on the next row when no more room available
         let svg = d3.select(div_id)
-                .append("svg")
-                .attr("viewBox", "0 0 " + win_width + " " + win_height)
-                .selectAll("sub_charts")
-                .data(subgroup_data)
-                .enter()
-                .append("g")
-                .attr("transform", function(d,i) {
-                    const col = i%3;
-                    const row = parseInt((i/3).toString());
-                    return "translate(" + (margin.left + (col * (sub_win_width + margin.right))) + ","
-                        + (margin.top + (row * (sub_win_height + margin.bottom))) + ")";
-                });
+            .append("svg")
+            .attr("viewBox", "0 0 " + win_width + " " + win_height)
+            .selectAll("sub_charts")
+            .data(subgroup_data)
+            .enter()
+            .append("g")
+            .attr("transform", function(d,i) {
+                const col = i%3;
+                const row = parseInt((i/3).toString());
+                return "translate(" + (margin.left + (col * (sub_win_width + margin.right))) + ","
+                    + (margin.top + (row * (sub_win_height + margin.bottom))) + ")";
+            });
 
         // Add X axis
         let x = d3.scaleLinear()
@@ -100,7 +100,7 @@ function drawChart_a2_v4() {
 
         // Draw scatter data
         let circles = svg.selectAll("circles")
-            .data(function(d){ return d.values; })
+            .data( d => d[1] )
             .enter()
             .append("circle")
             .attr("r", 1.5)
@@ -113,8 +113,8 @@ function drawChart_a2_v4() {
             .attr("text-anchor", "start")
             .attr("y", -10)
             .attr("x", 0)
-            .text(function(d){ return(d.key)})
-            .style("fill", function(d){ return color(d.key) })
+            .text( d => d[0] )
+            .style("fill", d => color(d[0]) )
 
         // X_axis measure selector
         function updateXAxis(new_x_axis_name) {
