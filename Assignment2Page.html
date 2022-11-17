@@ -27,12 +27,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- CSS -->
+    <link rel="stylesheet" href="charts/histogram/style.css">
     <link rel="stylesheet" href="scratch_1.css">
     <link rel="stylesheet" href="scratch_2.css">
     <link rel="stylesheet" href="static/css/custom_style.css">
 
     <!--D3.js -->
-    <script src="https://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3.v6.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.js"></script>
 
 
@@ -58,7 +59,9 @@
             The main tree species found in Trento's municipality and their size distributions.<br>
         </h4>
 
+        <select id="metric"></select>
         <div class="taskContainer" id="a2_v1"></div>
+        <script src="charts/histogram/main.js"></script>
 
         <hr>
         <br>
@@ -72,8 +75,6 @@
         <div class="taskContainer" id="a2_v2"></div>
         <script src="Deniz/boxplot.js"></script>
 
-
-
         <hr>
         <br>
 
@@ -84,6 +85,7 @@
         </h4>
 
         <div class="taskContainer" id="a2_v3"></div>
+        <script src="amir/scatter.js"></script>
 
         <hr>
         <br>
