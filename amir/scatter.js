@@ -1,29 +1,25 @@
 function drawChart_a2_v3() {
 
+    const div_id = "#a2_v3";
+
     // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 30, bottom: 40, left: 50},
-        width = 520 - margin.left - margin.right,
-        height = 520 - margin.top - margin.bottom;
+    const win_width = d3.select(div_id).node().getBoundingClientRect().width;
+    var margin = {top: 50, right: 30, bottom: 50, left: 80},
+        width = win_width - margin.left - margin.right,
+        height = (win_width/2) - margin.top - margin.bottom;
 
     // append the svg object to the body of the page
-    var svg = d3.select("#a2_v3")
+    var svg = d3.select(div_id)
         .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
+        //.attr("width", width + margin.left + margin.right)
+        //.attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")")
 
-    // Add the grey background that makes ggplot2 famous
-    svg.append("rect")
-        .attr("x",0)
-        .attr("y",0)
-        .attr("height", height)
-        .attr("width", height)
-        .style("fill", "EBEBEB")
-
     //Read the data
-    d3.csv("../data_clean/a2_v3_trees_size_carbon.csv", function(data) {
+    d3.csv("../data_clean/a2_v3_trees_size_carbon.csv").then(function(data) {
 
         const array = []
         let one=[]; let two = [];
@@ -52,12 +48,10 @@ function drawChart_a2_v3() {
             }
         }
 
-
         data.forEach(function(d){
             d['Height (m)'] = +d['Height (m)'];
             d['Carbon Storage (kg)'] = +d['Carbon Storage (kg)'];
         });
-
 
         // Add X axis
         var x = d3.scaleLinear()
@@ -65,26 +59,20 @@ function drawChart_a2_v3() {
             .range([ 0, width ])
         svg.append("g")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x).tickSize(-height*1.3).ticks(10))
-            .select(".domain").remove()
+            .call(d3.axisBottom(x).ticks(10))
 
         // Add Y axis
         var y = d3.scaleLinear()
             .domain([0, d3.max(data,function(d){ return d['Carbon Storage (kg)'];})])
             .range([ height, 0])
-            .nice()
         svg.append("g")
-            .call(d3.axisLeft(y).tickSize(-width*1.3).ticks(7))
-            .select(".domain").remove()
-
-        // Customization
-        svg.selectAll(".tick line").attr("stroke", "white")
+            .call(d3.axisLeft(y).ticks(7))
 
         // Add X axis label:
         svg.append("text")
             .attr("text-anchor", "end")
             .attr("x", width/2 + margin.left)
-            .attr("y", height + margin.top + 20)
+            .attr("y", height + margin.top - 10 )
             .text("Height");
 
         // Y axis label:
@@ -98,7 +86,7 @@ function drawChart_a2_v3() {
         // Color scale: give me a specie name, I return a color
         var color = d3.scaleOrdinal()
             .domain(["Prunus" ,"Acer pseudoplatanus", "Sophora japonica", "Tilia cordata", "Fagus", "Morus alba"  ])
-            .range([ "#ebff61", "#ff0000", "#ff619c", "#ff7f00", "#ff7fdb", "#0000e2" ])
+            .range(d3["schemeCategory10"])
 
         // Add dots
         svg.append('g')
@@ -108,10 +96,8 @@ function drawChart_a2_v3() {
             .append("circle")
             .attr("cx", function (d) { return x(d['Height (m)']);} )
             .attr("cy", function (d) { return y(d['Carbon Storage (kg)']); } )
-            .attr("r", 5)
+            .attr("r", 3)
             .style("fill", function (d) { return color(d['Name']); } )
-
-
     })
 }
 
