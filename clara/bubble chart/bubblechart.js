@@ -1,11 +1,11 @@
-function main() {
+function drawChart_a2_v5() {
     // set the dimensions and margins of the graph
     var margin = {top: 10, right: 20, bottom: 40, left: 50},
         width = 1400 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
 
-    var svg = d3.select("#secondAssignTask5")
+    var svg = d3.select("#a2_v5")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
@@ -72,7 +72,7 @@ function main() {
 
 
 
-        var tooltip = d3.select("#secondAssignTask5")
+        var tooltip = d3.select("#a2_v5")
             .append("div")
             .style("position", "absolute")
             .style("opacity", 0)
@@ -172,3 +172,5 @@ function main() {
                 .on("mouseleave", noHighlight)
     });
 }
+
+drawChart_a2_v5();

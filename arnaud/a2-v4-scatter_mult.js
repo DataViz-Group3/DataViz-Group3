@@ -5,7 +5,7 @@ function drawChart_a2_v4() {
 
     // Definition of the div target dimentions
     const ratio = 3 / 1.5; // 3 width = 2 height
-    const win_width = 1920;//d3.select(div_id).node().getBoundingClientRect().width; //1920;//
+    const win_width = d3.select(div_id).node().getBoundingClientRect().width; //1920;//
     const win_height = win_width / ratio; //1200;//
 
     // set the dimensions and margins of the graph
@@ -29,6 +29,7 @@ function drawChart_a2_v4() {
 
     // add the options to the button
     d3.select(div_id)
+        .append("div")
         .append("select")
         .attr("id", "x_axis_options")
         .selectAll("x_axis_options")
@@ -102,7 +103,7 @@ function drawChart_a2_v4() {
             .data(function(d){ return d.values; })
             .enter()
             .append("circle")
-            .attr("r", 2)
+            .attr("r", 1.5)
             .attr("fill", function(d) { return color(d.Name); })
             .attr("cx", function(d) { return x(d[default_x_axis_name]); })
             .attr("cy", function(d) { return y(d[default_y_axis_name]); });
