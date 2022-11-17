@@ -122,6 +122,9 @@ function drawChart_a2_v5() {
             .on("mouseover", showTooltip )
             .on("mouseleave", hideTooltip )
         
+                  // ---------------------------//
+          //       HIGHLIGHT GROUP      //
+          // ---------------------------//
         
           // What to do when one group is hovered
           var highlight = function(d){
@@ -135,7 +138,10 @@ function drawChart_a2_v5() {
         var noHighlight = function(d,i){
             d3.selectAll(".bubbles").style("opacity", 1)
         }
-    
+        
+            // ---------------------------//
+            //       LEGEND              //
+            // ---------------------------//
         
         
             // Add one dot in the legend for each name.
