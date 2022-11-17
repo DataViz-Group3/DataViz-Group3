@@ -2,20 +2,20 @@
 function drawChart_a1_v3() {
     let div_id = "#a1_v3";
 
-// Definition of the div target dimentions
+    // Definition of the div target dimentions
     let ratio = 3; // 3 width = 1 height
     let win_width = d3.select(div_id).node().getBoundingClientRect().width;
     let win_height = win_width / ratio;
 
-// set the dimensions and margins of the graph
+    // set the dimensions and margins of the graph
     let margin = {top: 60, right: 30, bottom: 20, left: 30};
     let graph_width = win_width - margin.right - margin.left;
     let graph_height = win_height - margin.top - margin.bottom;
 
-// Value to be left out to the left for the y-axis labels. Good value found by trial and error
+    // Value to be left out to the left for the y-axis labels. Good value found by trial and error
     let axis_label_width = 200;
 
-// Definition of the full svg
+    // Definition of the full svg
     let svg = d3.select(div_id)
         .append("svg")
         .attr("viewBox", "0 0 " + win_width + " " + win_height);
@@ -24,7 +24,7 @@ function drawChart_a1_v3() {
         return name.replaceAll(' ', '').replaceAll('.', '');
     }
 
-// Parse the Data
+    // Parse the Data
     d3.csv("../data_clean/a1_v3_stacked_chart_tot.csv", function (data) {
 
         // Subgroups (trees, other and total), groups (circoscrizione)
