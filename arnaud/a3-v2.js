@@ -1,5 +1,5 @@
-function drawChart_a3_v1() {
-    const div_id = "#a3_v1";
+function drawChart_a3_v2() {
+    const div_id = "#a3_v2";
 
     //Width and height
     let width = 1000;
@@ -68,15 +68,26 @@ function drawChart_a3_v1() {
 
     d3.csv("../data_clean/trees_located.csv").then( function(data) {
         const subgroup_data = d3.groups(data, d => d["Circoscrizione Name"]);
-        const max_count = d3.max(subgroup_data.map(d => d[1].length));
 
-        let subgroup_data_dict = {}
+        let subgroup_data_dict = {};
         for (let i in subgroup_data) {
             subgroup_data_dict[subgroup_data[i][0]] = subgroup_data[i][1];
         }
 
+        let subgroup_densities = {};
+        let max_dens = 0;
+        for (let subgroup in subgroup_data_dict) {
+            const subgroup_area = subgroup_data_dict[subgroup][0]["Circoscrizione Area"];
+            subgroup_densities[subgroup] = (100 * d3.sum(subgroup_data_dict[subgroup], function (d){
+                return d["Canopy Cover (m2)"];
+            }) / subgroup_area).toFixed(2);
+            if (max_dens < subgroup_densities[subgroup]) {
+                max_dens = subgroup_densities[subgroup];
+            }
+        }
+
         const colors = d3.scaleLinear()
-            .domain([0, max_count])
+            .domain([0, max_dens])
             .range(["white", "darkgreen"])
 
         // Three function that change the tooltip when user hover / move / leave a cell
@@ -85,8 +96,8 @@ function drawChart_a3_v1() {
         }
         let mousemove = function (event, d) {
             const circ = d.properties.nome;
-            const tree_count = subgroup_data_dict[circ].length;
-            Tooltip.html(circ + "<br>" + tree_count + " trees")
+            const density = subgroup_densities[circ];
+            Tooltip.html(circ + "<br>" + density + "% of total area")
                 .style("left", (event.pageX+20) + "px")
                 .style("top", (event.pageY) + "px");
         }
@@ -94,11 +105,14 @@ function drawChart_a3_v1() {
             Tooltip.style("opacity", 0);
         }
 
-        zones.attr("fill", function (d){ return colors(subgroup_data_dict[d.properties.nome].length); })
+        zones.attr("fill", function (d){
+                const circ = d.properties.nome;
+                return colors(subgroup_densities[circ]);
+            })
             .on("mouseover", mouseover)
             .on("mousemove", mousemove)
-            .on("mouseleave", mouseleave)
+            .on("mouseleave", mouseleave);
     })
 }
 
-drawChart_a3_v1();
+drawChart_a3_v2();
