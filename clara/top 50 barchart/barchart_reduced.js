@@ -1,20 +1,27 @@
 function drawChart_a1_v1() {
-	let margin = 250;
-	let tot_width = 1500;
-	let tot_height = 600;
-	let width = tot_width - margin;
-	let height = tot_height - margin;
+    let div_id = "#a1_v1";
 
-	let svg = d3.select("#a1_v1")
-			.append("svg")
-			.attr("width", tot_width)
-			.attr("height", tot_height);
+    // Definition of the div target dimentions
+    let ratio = 2.5; // 3 width = 1 height
+    let win_width = d3.select(div_id).node().getBoundingClientRect().width;
+    let win_height = win_width / ratio;
+
+    // set the dimensions and margins of the graph
+    let margin = {top: 30, right: 30, bottom: 140, left: 70};
+    let width = win_width - margin.right - margin.left;
+    let height = win_height - margin.top - margin.bottom;
+
+
+
+	let svg = d3.select(div_id)
+		.append("svg")
+		.attr("viewBox", "0 0 " + win_width + " " + win_height);
 
     let xScale = d3.scaleBand().range([0, width]).padding(0.4),
         yScale = d3.scaleLinear().range([height, 0]);
 
     let g = svg.append("g")
-            .attr("transform", "translate(" + 100 + "," + 100 + ")");
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 			
     d3.csv("../../data_clean/a1_v1_tree_abundance.csv", function(data) {
  
@@ -41,8 +48,9 @@ function drawChart_a1_v1() {
 
 		g.append("g")
 			.append("text")
-			.attr("x", 1300)
-			.attr("y", 350)
+			.style("text-anchor", "end")
+			.attr("x", width)
+			.attr("y", height+50)
 			.attr('text-anchor', 'end')
 			.attr('stroke', 'black')
 			.text("Name")
