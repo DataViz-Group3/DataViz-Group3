@@ -129,17 +129,17 @@ function drawChart_a1_v2() {
             .data(subgroups.slice().reverse())
             .enter().append("g")
           //.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-           .attr("transform", function(d, i) { return "translate(-50," + (300 + i * 20) + ")"; });
+           .attr("transform", function(d, i) { return "translate(0," + (350 + i * 20) + ")"; });
       
         legend.append("rect")
-            .attr("x", width - 50)
+            .attr("x", width - 30)
             .attr("y", -20)
             .attr("width", 19)
             .attr("height", 19)
             .attr("fill", color);
       
         legend.append("text")
-            .attr("x", width - 55)
+            .attr("x", width - 35)
             .attr("y", -7)
             .text(function(d) { return d; });
     		//d3.select(this).attr('class','highlight')
