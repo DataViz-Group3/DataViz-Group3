@@ -78,8 +78,8 @@ function drawChart_a3_v3() {
         for (let subgroup in subgroup_data_dict) {
             const subgroup_area = subgroup_data_dict[subgroup][0]["Circoscrizione Area"];
             subgroup_densities[subgroup] = (d3.sum(subgroup_data_dict[subgroup], function (d){
-                return d["Pollution Removal (g/yr)"];
-            })).toFixed(2);
+                return d["Oxygen Production (kg/yr)"];
+            }));
             if (max_dens < subgroup_densities[subgroup]) {
                 max_dens = subgroup_densities[subgroup];
             }
@@ -87,7 +87,7 @@ function drawChart_a3_v3() {
 
         const colors = d3.scaleLinear()
             .domain([0, max_dens])
-            .range(["white", "darkblue"])
+            .range(["white", "blue"])
 
         // Three function that change the tooltip when user hover / move / leave a cell
         let mouseover = function (d) {
