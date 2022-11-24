@@ -2,8 +2,8 @@ function drawChart_a3_v1() {
     const div_id = "#a3_v1";
 
     //Width and height
-    let width = 1000;
-    let height = 2000;
+    let win_width = d3.select(div_id).node().getBoundingClientRect().width;
+    let win_height = win_width;
 
     let normalize_name = function (name) {
         return name.replaceAll(' ', '').replaceAll('.', '');
@@ -24,6 +24,19 @@ function drawChart_a3_v1() {
         .style("font-size", "12px")
         .style("pointer-events", "none")
         .style("padding", "5px");
+
+    let margin = {top: 30, right: 30, bottom: 30, left: 30};
+    let width = win_width - margin.right - margin.left;
+    let height = win_height - margin.top - margin.bottom;
+    
+    
+    
+    let svg = d3.select(div_id)
+        .append("svg")
+        .attr("viewBox", "0 0 " + win_width + " " + win_height)
+    
+    let g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");     
 
     // Load external data and boot
     d3.json("../data/circoscrizioni.json").then( function(data) {
@@ -49,8 +62,7 @@ function drawChart_a3_v1() {
             .fitSize([width, width*ratio], data);
 
         // Draw the map
-        zones = d3.select(div_id)
-            .append("svg")
+        zones = g.append("g")
             .attr("width", width)
             .attr("height", height)
             .append("g")
@@ -75,9 +87,11 @@ function drawChart_a3_v1() {
             subgroup_data_dict[subgroup_data[i][0]] = subgroup_data[i][1];
         }
 
-        const colors = d3.scaleLinear()
-            .domain([0, max_count])
-            .range(["white", "darkgreen"])
+
+        const colors = d3.scaleThreshold()
+            .domain([100, 300, 500, 1000, 2000, 3000, max_count])
+            .range(d3.schemeGreens[7])
+
 
         // Three function that change the tooltip when user hover / move / leave a cell
         let mouseover = function (d) {
@@ -97,8 +111,46 @@ function drawChart_a3_v1() {
         zones.attr("fill", function (d){ return colors(subgroup_data_dict[d.properties.nome].length); })
             .on("mouseover", mouseover)
             .on("mousemove", mousemove)
-            .on("mouseleave", mouseleave)
+            .on("mouseleave", mouseleave) 
+           
+        var legend = svg.selectAll('g.legendEntry')
+            .data(colors.range())
+            .enter()
+            .append('g').attr('class', 'legendEntry');
+        
+        legend
+            .append('rect')
+            .attr("x", 100)
+            .attr("y", function(d, i) {
+               return i * 30;
+            })
+           .attr("width", 20)
+           .attr("height", 20)
+           .style("stroke", "black")
+           .style("stroke-width", 1)
+           .style("fill", function(d){return d;}); 
+               //the data objects are the fill colors
+        
+        legend
+            .append('text')
+            .attr("x", 150) //leave 5 pixel space after the <rect>
+            .attr("y", function(d, i) {
+               return i * 30;
+            })
+            .attr("dy", "0.8em") //place text one line *below* the x,y point
+            .text(function(d,i) {
+                var extent = colors.invertExtent(d);
+                //extent will be a two-element array, format it however you want:
+                var format = d3.format("0.2f");
+                if( i == 0 ) return "< " + format(+extent[1]);
+                if(i == 6) return ">" + format(+extent[0]);
+                return format(+extent[0]) + " - " + format(+extent[1]);
+            });
+
+
     })
+
+    
 }
 
 drawChart_a3_v1();
