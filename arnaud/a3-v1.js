@@ -3,7 +3,7 @@ function drawChart_a3_v1() {
 
     //Width and height
     let win_width = d3.select(div_id).node().getBoundingClientRect().width;
-    let win_height = win_width;
+    let win_height = win_width/2.2;
 
     let normalize_name = function (name) {
         return name.replaceAll(' ', '').replaceAll('.', '');
@@ -25,7 +25,7 @@ function drawChart_a3_v1() {
         .style("pointer-events", "none")
         .style("padding", "5px");
 
-    let margin = {top: 30, right: 30, bottom: 30, left: 30};
+    let margin = {top: 0, right: win_width/4, bottom: 0, left: win_width/4};
     let width = win_width - margin.right - margin.left;
     let height = win_height - margin.top - margin.bottom;
     
@@ -120,9 +120,9 @@ function drawChart_a3_v1() {
         
         legend
             .append('rect')
-            .attr("x", 100)
+            .attr("x", 120)
             .attr("y", function(d, i) {
-               return i * 30;
+               return 30+ i * 30;
             })
            .attr("width", 20)
            .attr("height", 20)
@@ -135,7 +135,7 @@ function drawChart_a3_v1() {
             .append('text')
             .attr("x", 150) //leave 5 pixel space after the <rect>
             .attr("y", function(d, i) {
-               return i * 30;
+               return 30+ i * 30;
             })
             .attr("dy", "0.8em") //place text one line *below* the x,y point
             .text(function(d,i) {
@@ -146,6 +146,10 @@ function drawChart_a3_v1() {
                 if(i == 6) return ">" + format(+extent[0]);
                 return format(+extent[0]) + " - " + format(+extent[1]);
             });
+        legend.append('text')
+            .attr("x", 120)
+            .attr("y", 20)
+            .text("Tree Abundance")
 
 
     })
