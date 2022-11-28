@@ -1,19 +1,23 @@
 function drawChart_a2_v5() {
-    const div_id = "#a2_v5";
+    let div_id = "#a2_v5";
+
+    // Definition of the div target dimentions
+    let ratio = 2.5; // 3 width = 1 height
+    let win_width = d3.select(div_id).node().getBoundingClientRect().width;
+    let win_height = win_width / ratio;
 
     // set the dimensions and margins of the graph
-    var margin = {top: 10, right: 20, bottom: 40, left: 50},
-        width = 1400 - margin.left - margin.right,
-        height = 600 - margin.top - margin.bottom;
+    let margin = {top: 30, right: 30, bottom: 30, left: 50};
+    let width = win_width - margin.right - margin.left;
+    let height = win_height - margin.top - margin.bottom;
 
 
-    var svg = d3.select(div_id)
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
+	let svg = d3.select(div_id)
+		.append("svg")
+		.attr("viewBox", "0 0 " + win_width + " " + win_height)
+
+    let g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");     
 
     let normalize_name = function (name) {
         return name.replaceAll(' ','').replaceAll('.', '').replaceAll('\'', '');
@@ -31,15 +35,14 @@ function drawChart_a2_v5() {
         var x = d3.scaleLinear()
             .domain([0, 5+ d3.max(data, function(d) { return d['Height (m)']; })])
             .range([0, width ]);
-        svg.append("g")
+        g.append("g")
             .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x));
-
-        // Add X axis label:
-        svg.append("text")
+            .call(d3.axisBottom(x))
+            
+        g.append("text")
             .attr("text-anchor", "end")
-            .attr("x", width+ 10)
-            .attr("y", height + 30 )
+            .attr("x", width)
+            .attr("y", height-10)
             .text("Tree Height (m)");
 
         // Add Y axis        
@@ -47,14 +50,12 @@ function drawChart_a2_v5() {
             .domain([0, 300+d3.max(data, function(d) { return d['Carbon Storage (kg)']; })])
             .range([height,0 ]);
 
-        svg.append("g")
-            .call(d3.axisLeft(y));
-
-        // Add Y axis label:
-        svg.append("text")
+        g.append("g")
+            .call(d3.axisLeft(y))
+        g.append("text")
             .attr("text-anchor", "end")
-            .attr("x", 0)
-            .attr("y", 0 )
+            .attr("x", 10)
+            .attr("y", 10 )
             .text("Carbon Storage (kg)")
             .attr("text-anchor", "start")
 
@@ -104,7 +105,7 @@ function drawChart_a2_v5() {
 
 
         // Add dots
-        svg.append('g')
+        g.append('g')
             .selectAll("dot")
             .data(data)
             .enter()
@@ -147,7 +148,7 @@ function drawChart_a2_v5() {
             .enter()
             .append("circle")
             .attr("cx", width - 200)
-            .attr("cy", function(d,i){ return 200 + i*25})
+            .attr("cy", function(d,i){ return 250 + i*25})
             .attr("r", 7)
             .style("fill", function(d){ return color(d)})
             .on("mouseover", highlight)
@@ -159,7 +160,7 @@ function drawChart_a2_v5() {
             .enter()
             .append("text")
             .attr("x", width-200 + 16)
-            .attr("y", function(d,i){ return i * 25 + 200})
+            .attr("y", function(d,i){ return i * 25 + 250})
             .style("fill", function(d){ return color(d)})
             .text(function(d){ return d})
             .attr("text-anchor", "left")

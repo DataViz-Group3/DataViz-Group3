@@ -1,17 +1,25 @@
 function drawChart_a1_v2() {
     // set the dimensions and margins of the graph
-    var margin = {top: 20, right: 0, bottom: 20, left: 200},
-        width = 1400 - margin.left - margin.right,
-        height = 550 - margin.top - margin.bottom;
+    let div_id = "#a1_v2";
 
-    var svg = d3.select("#a1_v2")
-        .append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    // Definition of the div target dimentions
+    let ratio = 2.5; // 3 width = 1 height
+    let win_width = d3.select(div_id).node().getBoundingClientRect().width;
+    let win_height = win_width / ratio;
 
-        
+    // set the dimensions and margins of the graph
+    let margin = {top: 30, right: 30, bottom: 30, left: 200};
+    let width = win_width - margin.right - margin.left;
+    let height = win_height - margin.top - margin.bottom;
+
+
+
+	let svg = d3.select(div_id)
+		.append("svg")
+		.attr("viewBox", "0 0 " + win_width + " " + win_height)
+
+    let g = svg.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");     
 
     d3.csv("../../data_clean/a1_v2_stacked_chart.csv", function(data) {
 
@@ -22,7 +30,7 @@ function drawChart_a1_v2() {
         // Add X axis
         var x = d3.scaleLinear()
             .domain([0, 3050])
-            .range([0, width ]); 
+            .range([0, width ])
         
         // Add Y axis        
         var y = d3.scaleBand()
@@ -30,8 +38,8 @@ function drawChart_a1_v2() {
             .range([0, height])
             .padding([0.2])
 
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
+        g.append("g")
+            .attr("transform", "translate(" + 0 + "," + height + ")")
             .call(d3.axisBottom(x).tickSizeOuter(0))
             .append("text")
             .attr('text-anchor', 'end')
@@ -41,14 +49,14 @@ function drawChart_a1_v2() {
             .text("Count")
 
 
-        svg.append("g")
+        g.append("g")
             .call(d3.axisLeft(y))
-            .append("text")
-            .attr('y', '-5')
-            .attr('x', '-5')
-            .attr('text-anchor', 'end')
-            .attr('stroke', 'black')
+			.append("text")
+			.attr('text-anchor', 'begin')
+            .attr("x", -10)
+			.attr('stroke', 'black')
             .text('Zone');
+
 
         // color palette = one color per subgroup
 
@@ -91,7 +99,7 @@ function drawChart_a1_v2() {
         
 
         // Show the bars
-        svg.append("g")
+        g.append("g")
             .selectAll("g")
             // Enter in the stack data = loop key per key = group per group
             .data(stackedData)
@@ -121,17 +129,17 @@ function drawChart_a1_v2() {
             .data(subgroups.slice().reverse())
             .enter().append("g")
           //.attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-           .attr("transform", function(d, i) { return "translate(-50," + (300 + i * 20) + ")"; });
+           .attr("transform", function(d, i) { return "translate(0," + (350 + i * 20) + ")"; });
       
         legend.append("rect")
-            .attr("x", width - 50)
+            .attr("x", width - 30)
             .attr("y", -20)
             .attr("width", 19)
             .attr("height", 19)
             .attr("fill", color);
       
         legend.append("text")
-            .attr("x", width - 55)
+            .attr("x", width - 35)
             .attr("y", -7)
             .text(function(d) { return d; });
     		//d3.select(this).attr('class','highlight')
