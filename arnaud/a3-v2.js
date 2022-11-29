@@ -155,8 +155,7 @@ function drawChart_a3_v2() {
             const circ = d.properties.Name;
             zones.style("opacity", 1);
             d3.selectAll("#" + normalize_name(circ) + ".zones")
-                .style("stroke-width", 1)
-                .style("opacity", 0.8);
+                .style("stroke-width", 1);
             Tooltip.style("opacity", 0);
         }
         zones.on("mouseleave", mouseleave)
@@ -251,13 +250,10 @@ function drawChart_a3_v2() {
                 const quart = d.properties.Name;
                 d3.selectAll(".mini_zones").style("opacity", 1);
                 d3.selectAll("#" + normalize_name(quart) + ".mini_zones")
-                    .style("stroke-width", 1)
-                    .style("opacity", 0.8);
+                    .style("stroke-width", 1);
                 Tooltip.style("opacity", 0);
             }
             minimap_zones.on("mouseleave", mouseleave_mini);
-
-
         }
 
         /* ---------------------------------------------------------------------------------------------
