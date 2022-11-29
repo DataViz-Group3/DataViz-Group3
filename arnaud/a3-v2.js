@@ -24,7 +24,7 @@ function drawChart_a3_v2() {
     // Basic definition of svg zone of main graph
     let svg = d3.select(div_id)
         .append("div")
-        .style("border-style", "solid")
+        .style("border-right", "dashed")
         .style("width", main_win_width + "px")
         .style("height", main_win_height + "px")
         .append("svg")
@@ -36,9 +36,27 @@ function drawChart_a3_v2() {
         .style("width", tool_win_width + "px")
         .style("height", main_win_height + "px");
 
-    // Mini map
+    // Legend div
+    let legend = toolBar.append("div")
+        .style("width", tool_win_width + "px")
+        .style("height", tool_win_width + "px");
+
+    // Minimap title
+    let minimap_title_div = toolBar.append("div")
+        .style("width", tool_win_width + "px")
+        .style("height", "40px")
+        .style("padding-left", "20px");
+
+    minimap_title_div.append("Text")
+        .text("Quartiere: ")
+        .style("font-weight", "bold");
+
+    const default_minimap_title = "Click on the map";
+    let minimap_title = minimap_title_div.append("Text")
+        .text(default_minimap_title);
+
+    // Minimap
     let minimap = toolBar.append("div")
-        .style("border-style", "solid")
         .style("width", tool_win_width + "px")
         .style("height", tool_win_width + "px");
 
@@ -248,19 +266,14 @@ function drawChart_a3_v2() {
         let active_minimap = null;
         function mouseclick(event, d) {
             const circo = normalize_name(d.properties.Name);
-            if (active_minimap === circo) {
-                d3.select("#" + active_minimap + ".minimap")
-                    .style("opacity", 0)
-                    .style("pointer-events", "none");
-                active_minimap = null;
-            }
-            else {
+            if (active_minimap !== circo) {
                 d3.select("#" + active_minimap + ".minimap")
                     .style("opacity", 0)
                     .style("pointer-events", "none");
                 d3.select("#" + circo + ".minimap")
                     .style("opacity", 1)
                     .style("pointer-events", "auto");
+                minimap_title.text(d.properties.Name);
                 active_minimap = circo;
             }
         }
@@ -269,14 +282,16 @@ function drawChart_a3_v2() {
         /* ---------------------------------------------------------------------------------------------
         Legend
         --------------------------------------------------------------------------------------------- */
-        /*var legend = svg.selectAll('g.legendEntry')
+        let legend_svg = legend.append("svg")
+            .attr("width", tool_win_width)
+            .attr("height", tool_win_width)
+            .selectAll('g.legendEntry')
             .data(colors.range())
             .enter()
             .append('g').attr('class', 'legendEntry');
 
-        legend
-            .append('rect')
-            .attr("x", 120)
+        legend_svg.append('rect')
+            .attr("x", 20)
             .attr("y", function(d, i) {
                 return 30+ i * 30;
             })
@@ -287,9 +302,8 @@ function drawChart_a3_v2() {
             .style("fill", function(d){return d;});
         //the data objects are the fill colors
 
-        legend
-            .append('text')
-            .attr("x", 150) //leave 5 pixel space after the <rect>
+        legend_svg.append('text')
+            .attr("x", 50) //leave 5 pixel space after the <rect>
             .attr("y", function(d, i) {
                 return 30+ i * 30;
             })
@@ -298,17 +312,15 @@ function drawChart_a3_v2() {
                 var extent = colors.invertExtent(d);
                 //extent will be a two-element array, format it however you want:
                 var format = d3.format("0.2f");
-                if( i == 0 ) return "< " + format(+extent[1]);
-                if(i == 6) return ">" + format(+extent[0]);
-                return format(+extent[0]) + " - " + format(+extent[1]);
+                if(i===0) return "< " + format(+extent[1]) + "%";
+                if(i===6) return ">" + format(+extent[0]) + "%";
+                return format(+extent[0]) + "%" + " - " + format(+extent[1]) + "%";
             });
-        legend.append('text')
-            .attr("x", 120)
+
+        legend_svg.append('text')
+            .attr("x", 20)
             .attr("y", 20)
-            .text("Tree Abundance")
-
-         */
-
+            .text("Tree Coverage");
     });
 }
 
