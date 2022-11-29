@@ -85,7 +85,6 @@ function drawChart_a3_v3() {
         Color Range
         --------------------------------------------------------------------------------------------- */
         const max_dens = d3.max(data.features, (d) => Number(d.properties[measure]));
-        console.log(max_dens)
         const max_dens_quart = d3.max(data.features,
             (d) => d3.max(d.properties['Quartiere'].features,
                 (d) => Number(d.properties[measure])));
