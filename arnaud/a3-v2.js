@@ -48,7 +48,7 @@ function drawChart_a3_v2() {
         .style("padding-left", "20px");
 
     minimap_title_div.append("Text")
-        .text("Quartiere: ")
+        .text("Neighbourhood: ")
         .style("font-weight", "bold");
 
     const default_minimap_title = "Click on the map";
@@ -77,8 +77,6 @@ function drawChart_a3_v2() {
     function normalize_name(name) {
         return name.replaceAll(' ', '').replaceAll('.', '');
     }
-
-    let minimap_divs = {};
 
     d3.json("../data_clean/a3.json").then( function(data) {
         const measure = "Canopy Cover Density (perc)";
