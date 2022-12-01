@@ -1,5 +1,5 @@
 function drawChart_a3_v2() {
-    const div_id = "#a3_v2";
+    const div_id = "a3_v2";
 
     //Width and height
     let width = 1000;
@@ -7,7 +7,7 @@ function drawChart_a3_v2() {
 
     // Sizes definitions
     const win_ratio = 3/2;
-    const win_width = d3.select(div_id).node().getBoundingClientRect().width;
+    const win_width = d3.select("#" + div_id).node().getBoundingClientRect().width;
     const win_height = win_width / win_ratio;
 
     const margin = {top: 20, right: 20, bottom: 20, left: 20};
@@ -17,12 +17,12 @@ function drawChart_a3_v2() {
 
     const tool_win_width = (win_width/3) - margin.right - margin.left;
 
-    d3.select(div_id)
+    d3.select("#" + div_id)
         .style("display", "flex")
         .style("flex-direction", "row")
 
     // Basic definition of svg zone of main graph
-    let svg = d3.select(div_id)
+    let svg = d3.select("#" + div_id)
         .append("div")
         .style("border-right", "dashed")
         .style("width", main_win_width + "px")
@@ -31,7 +31,7 @@ function drawChart_a3_v2() {
         .attr("viewBox", "0 0 " + main_win_width + " " + main_win_height);
 
     // Right toolbar
-    let toolBar = d3.select(div_id)
+    let toolBar = d3.select("#" + div_id)
         .append("div")
         .style("width", tool_win_width + "px")
         .style("height", main_win_height + "px");
@@ -61,7 +61,7 @@ function drawChart_a3_v2() {
         .style("height", tool_win_width + "px");
 
     // create a tooltip
-    let Tooltip = d3.select(div_id)
+    let Tooltip = d3.select("#" + div_id)
         .append("div")
         .style("opacity", 0)
         .attr("class", "tooltip")
@@ -110,11 +110,11 @@ function drawChart_a3_v2() {
             .fitSize([main_win_width, main_win_width], data);
 
         let zones = svg.append("g")
-            .selectAll(".zones")
+            .selectAll(".zones_" + div_id)
             .data(data.features)
             .enter()
             .append("path")
-            .attr("class", "zones")
+            .attr("class", "zones_" + div_id)
             .attr("id", (d) => normalize_name(d.properties.Name) )
             .attr("d", d3.geoPath().projection(projection))
             .attr("fill", (d) => colors(d.properties[measure]))
@@ -126,7 +126,7 @@ function drawChart_a3_v2() {
         function mouseover(event, d) {
             const circ = d.properties.Name;
             zones.style("opacity", 0.8);
-            d3.selectAll("#" + normalize_name(circ) + ".zones")
+            d3.selectAll("#" + normalize_name(circ) + ".zones_" + div_id)
                 .style("stroke-width", 3)
                 .style("opacity", 1);
             Tooltip.style("opacity", 1);
@@ -152,7 +152,7 @@ function drawChart_a3_v2() {
         function mouseleave(event, d) {
             const circ = d.properties.Name;
             zones.style("opacity", 1);
-            d3.selectAll("#" + normalize_name(circ) + ".zones")
+            d3.selectAll("#" + normalize_name(circ) + ".zones_" + div_id)
                 .style("stroke-width", 1);
             Tooltip.style("opacity", 0);
         }
@@ -174,7 +174,7 @@ function drawChart_a3_v2() {
                 .style("opacity", 0)
                 .style("pointer-events", "none")
                 .style("position", "absolute")
-                .attr("class", "minimap")
+                .attr("class", "minimap_" + div_id)
                 .attr("id", normalize_name(circo_name))
                 .append("svg")
                 .attr("width", tool_win_width)
@@ -185,7 +185,7 @@ function drawChart_a3_v2() {
                 .data(circo_data.features)
                 .enter()
                 .append("path")
-                .attr("class", "mini_zones")
+                .attr("class", "mini_zones_" + div_id)
                 .attr("id", (d) => normalize_name(d.properties.Name) )
                 .attr("d", d3.geoPath().projection(mini_projection))
                 .style("fill", (d) => colors(d.properties[measure]))
@@ -220,8 +220,9 @@ function drawChart_a3_v2() {
             --------------------------------------------------------------------------------------------- */
             function mouseover_mini(event, d) {
                 const quart = d.properties.Name;
-                d3.selectAll(".mini_zones").style("opacity", 0.8);
-                d3.selectAll("#" + normalize_name(quart) + ".mini_zones")
+                d3.selectAll(".mini_zones_" + div_id)
+                    .style("opacity", 0.8);
+                d3.selectAll("#" + normalize_name(quart) + ".mini_zones_" + div_id)
                     .style("stroke-width", 3)
                     .style("opacity", 1);
                 Tooltip.style("opacity", 1);
@@ -246,8 +247,9 @@ function drawChart_a3_v2() {
 
             function mouseleave_mini(event, d) {
                 const quart = d.properties.Name;
-                d3.selectAll(".mini_zones").style("opacity", 1);
-                d3.selectAll("#" + normalize_name(quart) + ".mini_zones")
+                d3.selectAll(".mini_zones_" + div_id)
+                    .style("opacity", 1);
+                d3.selectAll("#" + normalize_name(quart) + ".mini_zones_" + div_id)
                     .style("stroke-width", 1);
                 Tooltip.style("opacity", 0);
             }
@@ -261,10 +263,10 @@ function drawChart_a3_v2() {
         function mouseclick(event, d) {
             const circo = normalize_name(d.properties.Name);
             if (active_minimap !== circo) {
-                d3.select("#" + active_minimap + ".minimap")
+                d3.select("#" + active_minimap + ".minimap_" + div_id)
                     .style("opacity", 0)
                     .style("pointer-events", "none");
-                d3.select("#" + circo + ".minimap")
+                d3.select("#" + circo + ".minimap_" + div_id)
                     .style("opacity", 1)
                     .style("pointer-events", "auto");
                 minimap_title.text(d.properties.Name);
