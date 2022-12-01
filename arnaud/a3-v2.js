@@ -1,50 +1,51 @@
 function drawChart_a3_v2() {
     const div_id = "a3_v2";
 
-    //Width and height
-    let width = 1000;
-    let height = 1100;
-
     // Sizes definitions
-    const win_ratio = 3/2;
-    const win_width = d3.select("#" + div_id).node().getBoundingClientRect().width;
-    const win_height = win_width / win_ratio;
 
     const margin = {top: 20, right: 20, bottom: 20, left: 20};
 
-    const main_win_width = (win_width*(2/3) ) - margin.right - margin.left;
-    const main_win_height = win_height - margin.top - margin.bottom;
-
-    const tool_win_width = (win_width/3) - margin.right - margin.left;
 
     d3.select("#" + div_id)
+        .style("width", "100%")
+        .style("height", "70vh")
         .style("display", "flex")
         .style("flex-direction", "row")
+        .style("flex-wrap", "wrap")
+        .style("justify-content", "center");
+
+    // Size definitions
+    const win_width = d3.select("#" + div_id).node().getBoundingClientRect().width;
+    const win_height = d3.select("#" + div_id).node().getBoundingClientRect().height;
+
+    const main_win_size = win_height * 1.5 < win_width? win_height: win_width;
+    const tool_win_width = main_win_size / 2.8;
+
+
+    console.log(d3.select("#" + div_id).node().getBoundingClientRect())
 
     // Basic definition of svg zone of main graph
     let svg = d3.select("#" + div_id)
         .append("div")
-        .style("border-right", "dashed")
-        .style("width", main_win_width + "px")
-        .style("height", main_win_height + "px")
+        .style("width", "70vh")
+        .style("padding", "5px")
         .append("svg")
-        .attr("viewBox", "0 0 " + main_win_width + " " + main_win_height);
+        .attr("viewBox", "0 0 " + main_win_size + " " + main_win_size);
 
     // Right toolbar
     let toolBar = d3.select("#" + div_id)
         .append("div")
-        .style("width", tool_win_width + "px")
-        .style("height", main_win_height + "px");
+        .style("width", "25vh");
 
     // Legend div
     let legend = toolBar.append("div")
-        .style("width", tool_win_width + "px")
-        .style("height", tool_win_width + "px");
+        .style("width", "25vh");
 
     // Minimap title
     let minimap_title_div = toolBar.append("div")
-        .style("width", tool_win_width + "px")
-        .style("height", "40px")
+        .style("width", "25vh")
+        .style("margin-top", "10px")
+        .style("margin-bottom", "10px")
         .style("padding-left", "20px");
 
     minimap_title_div.append("Text")
@@ -57,8 +58,8 @@ function drawChart_a3_v2() {
 
     // Minimap
     let minimap = toolBar.append("div")
-        .style("width", tool_win_width + "px")
-        .style("height", tool_win_width + "px");
+        .style("padding", "5px")
+        .style("width", "25vh");
 
     // create a tooltip
     let Tooltip = d3.select("#" + div_id)
@@ -107,7 +108,7 @@ function drawChart_a3_v2() {
         --------------------------------------------------------------------------------------------- */
         const projection = d3.geoIdentity()
             .reflectY(true)
-            .fitSize([main_win_width, main_win_width], data);
+            .fitSize([main_win_size, main_win_size], data);
 
         let zones = svg.append("g")
             .selectAll(".zones_" + div_id)
@@ -279,8 +280,7 @@ function drawChart_a3_v2() {
         Legend
         --------------------------------------------------------------------------------------------- */
         let legend_svg = legend.append("svg")
-            .attr("width", tool_win_width)
-            .attr("height", tool_win_width)
+            .attr("viewBox", "0 0 " + tool_win_width + " " + tool_win_width * 1.2)
             .selectAll('g.legendEntry')
             .data(colors.range())
             .enter()
