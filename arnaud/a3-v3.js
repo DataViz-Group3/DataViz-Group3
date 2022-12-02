@@ -1,50 +1,61 @@
 function drawChart_a3_v3() {
     const div_id = "a3_v3";
 
-    //Width and height
-    let width = 1000;
-    let height = 1100;
-
-    // Sizes definitions
-    const win_ratio = 3/2;
-    const win_width = d3.select("#" + div_id).node().getBoundingClientRect().width;
-    const win_height = win_width / win_ratio;
-
-    const margin = {top: 20, right: 20, bottom: 20, left: 20};
-
-    const main_win_width = (win_width*(2/3) ) - margin.right - margin.left;
-    const main_win_height = win_height - margin.top - margin.bottom;
-
-    const tool_win_width = (win_width/3) - margin.right - margin.left;
-
     d3.select("#" + div_id)
+        .style("width", "100%")
         .style("display", "flex")
         .style("flex-direction", "row")
+        .style("flex-wrap", "wrap")
+        .style("justify-content", "center");
 
     // Basic definition of svg zone of main graph
-    let svg = d3.select("#" + div_id)
+    let svg_div = d3.select("#" + div_id)
         .append("div")
-        .style("border-right", "dashed")
-        .style("width", main_win_width + "px")
-        .style("height", main_win_height + "px")
-        .append("svg")
-        .attr("viewBox", "0 0 " + main_win_width + " " + main_win_height);
+        .style("width", "70vh")
+        .style("height", "70vh")
+        .style("padding", "5px")
+
+    // Size definitions
+    const win_width = d3.select("#" + div_id).node().getBoundingClientRect().width;
+    const win_height = svg_div.node().getBoundingClientRect().height;
+
+    const main_win_size = win_height * 1.5 < win_width? win_height: win_width;
+    const tool_win_width = main_win_size / 2.8;
+
+    let svg = svg_div.append("svg")
+        .attr("viewBox", "0 0 " + main_win_size + " " + main_win_size);
 
     // Right toolbar
     let toolBar = d3.select("#" + div_id)
         .append("div")
-        .style("width", tool_win_width + "px")
-        .style("height", main_win_height + "px");
+        .attr("id", "toolbar_" + div_id)
+        .style("display", "flex")
+        .style("flex-wrap", "wrap")
+        .style("justify-content", "space-between");
+
+    function decide_flex_dir() {
+        const div_width = d3.select("#" + div_id).node().getBoundingClientRect().width;
+        const dir = (div_width < window.innerHeight)? "row": "column";
+        d3.select("#toolbar_" + div_id).style("flex-direction", dir);
+    }
+    d3.select(window).on("resize." + div_id, decide_flex_dir);
+    decide_flex_dir();
 
     // Legend div
     let legend = toolBar.append("div")
-        .style("width", tool_win_width + "px")
-        .style("height", tool_win_width + "px");
+        .style("width", "30vh");
+
+    // Minimap div
+    let minimap_div = toolBar.append("div")
+        .style("width", "30vh")
+        .style("display", "flex")
+        .style("flex-direction", "column");
 
     // Minimap title
-    let minimap_title_div = toolBar.append("div")
-        .style("width", tool_win_width + "px")
-        .style("height", "40px")
+    let minimap_title_div = minimap_div.append("div")
+        .style("width", "30vh")
+        .style("margin-top", "10px")
+        .style("margin-bottom", "10px")
         .style("padding-left", "20px");
 
     minimap_title_div.append("Text")
@@ -56,9 +67,10 @@ function drawChart_a3_v3() {
         .text(default_minimap_title);
 
     // Minimap
-    let minimap = toolBar.append("div")
-        .style("width", tool_win_width + "px")
-        .style("height", tool_win_width + "px");
+    let minimap = minimap_div.append("div")
+        .style("padding", "5px")
+        .style("width", "30vh")
+        .style("height", "30vh");
 
     // create a tooltip
     let Tooltip = d3.select("#" + div_id)
@@ -107,7 +119,7 @@ function drawChart_a3_v3() {
         --------------------------------------------------------------------------------------------- */
         const projection = d3.geoIdentity()
             .reflectY(true)
-            .fitSize([main_win_width, main_win_width], data);
+            .fitSize([main_win_size, main_win_size], data);
 
         let zones = svg.append("g")
             .selectAll(".zones_" + div_id)
@@ -274,8 +286,7 @@ function drawChart_a3_v3() {
         Legend
         --------------------------------------------------------------------------------------------- */
         let legend_svg = legend.append("svg")
-            .attr("width", tool_win_width)
-            .attr("height", tool_win_width)
+            .attr("viewBox", "0 0 " + (tool_win_width * 1.2)+ " " + tool_win_width)
             .selectAll('g.legendEntry')
             .data(colors.range())
             .enter()
