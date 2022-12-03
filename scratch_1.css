@@ -23,7 +23,6 @@ h1 {
     text-transform: uppercase;
     font-size: 45px;
     margin: 0 0 24px;
-
 }
 
 
@@ -35,48 +34,25 @@ h2, h3, h4 {
 }
 
 
-#secondAssignPageContent {
-
+.AssignPageContent {
     overflow-x: auto;
     z-index: 2;
     margin-top: 15px;
-
 }
 
-#secondAssignTitle {
-    color: 	#476b50;
-    padding-top: 22px;
-    margin-top: 90px;
+.AssignTitle {
+    color: #476b50;
+    margin-top: 60px;
+}
+
+.AssignTasks {
+    justify-content: center;
+    text-align: center;
 }
 
 .taskContainer {
     display: flex;
     justify-content: center;
-}
-
-#secondAssignTask1{
-    justify-content: center;
-    text-align: center;
-}
-
-#secondAssignTask2{
-    justify-content: center;
-    text-align: center;
-}
-
-#secondAssignTask3{
-    justify-content: center;
-    text-align: center;
-}
-
-#secondAssignTask4{
-    justify-content: center;
-    text-align: center;
-}
-
-#secondAssignTask5{
-    justify-content: center;
-    text-align: center;
 }
 
 #a1_v5
