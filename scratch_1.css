@@ -37,7 +37,6 @@ h2, h3, h4 {
 .AssignPageContent {
     overflow-x: auto;
     z-index: 2;
-    margin-top: 15px;
 }
 
 .AssignTitle {
