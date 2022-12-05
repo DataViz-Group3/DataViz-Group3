@@ -8,9 +8,9 @@ function drawChart_a4_v3() {
         .style("width", "100%");
 
     // set the dimensions and margins of the graph
-    const margin = {top: 60, right: 30, bottom: 20, left: 110},
-        width = 660 - margin.left - margin.right,
-        height = 600 - margin.top - margin.bottom;
+    const margin = {top: 20, right: 60, bottom: 20, left: 30},
+        width = 800 - margin.left - margin.right,
+        height = 400 - margin.top - margin.bottom;
 
     // This is what I need to compute kernel density estimation
     function kernelDensityEstimator(kernel, X) {
@@ -68,8 +68,7 @@ function drawChart_a4_v3() {
     // append the svg object to the body of the page
     const svg = d3.select(div_id)
         .append("div")
-        .style("width", "70vh")
-        .style("height", "70vh")
+        .style("width", "80%")
         .append("svg")
         .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
         //.attr("width", width + margin.left + margin.right)
@@ -86,47 +85,49 @@ function drawChart_a4_v3() {
         }
 
         // Add X axis
-        const x = d3.scaleLinear()
+        const y = d3.scaleLinear()
             .domain(x_range)
-            .range([0, width]);
+            .range([height, 0]);
         svg.append("g")
-            .attr("transform", `translate(0, ${height})`)
-            .call(d3.axisBottom(x));
+            //.attr("transform", `translate(0, ${height})`)
+            .call(d3.axisLeft(y));
 
         // Create a Y scale for densities
-        const y = d3.scaleLinear()
-            .domain([0, 0.7])
-            .range([height, 0]);
+        const x = d3.scaleLinear()
+            .domain([0, 0.9])
+            .range([0, width]);
 
         // Create the Y axis for names
-        const yName = d3.scaleBand()
+        const xName = d3.scaleBand()
             .domain(months)
-            .range([0, height])
+            .range([0, width])
             .paddingInner(1)
         svg.append("g")
-            .call(d3.axisLeft(yName));
+            .attr("transform", `translate(0, ${height})`)
+            .call(d3.axisBottom(xName));
 
         // Compute kernel density estimation for each column:
-        const kde = kernelDensityEstimator(kernelEpanechnikov(7), x.ticks(40)) // increase this 40 for more accurate density.
+        const tick_density = 40;
+        const kde = kernelDensityEstimator(kernelEpanechnikov(7), y.ticks(tick_density)) // increase this 40 for more accurate density.
         const densities = [];
         for(let m in months){
             const month = months[m];
             const month_nr = Number(m) + 1;
 
-            let monthDensities = new Array(x.ticks(40).length)
-            for(let i in x.ticks(40)){
+            let monthDensities = new Array(y.ticks(tick_density).length)
+            for(let i in y.ticks(tick_density)){
                 monthDensities[i] = {"min": {}, "max": {}};
             }
             for(let meas in measure_color) {
                 const measure = measure_color[meas][0];
 
-                for(let y in years) {
-                    const year = years[y];
+                for(let ye in years) {
+                    const year = years[ye];
                     const year_data = yearly_data[year].filter((d) => Number(d.date.split("-")[1]) === month_nr);
 
                     const measure_year_densities = kde(year_data.map((d) => d[measure]));
 
-                    for(let i in x.ticks(40)){
+                    for(let i in y.ticks(tick_density)){
                         monthDensities[i][measure][year] = measure_year_densities[i];
                     }
                 }
@@ -143,7 +144,7 @@ function drawChart_a4_v3() {
             paths[measure] = svg.selectAll("areas")
                 .data(densities)
                 .join("path")
-                .attr("transform", (d) => "translate(0, " + (yName(d.month)-height) + ")")
+                .attr("transform", (d) => "translate(" + (xName(d.month)) + ", 0)")
                 .datum((d) => d.densities)
                 .attr("stroke", color)
                 .attr("fill", "none")
@@ -161,8 +162,8 @@ function drawChart_a4_v3() {
                     .duration(500)
                     .attr("d",  d3.line()
                         .curve(d3.curveBasis)
-                        .x((d) => x(d[measure][year][0]))
-                        .y((d) => y(d[measure][year][1]))
+                        .x((d) => x(d[measure][year][1]))
+                        .y((d) => y(d[measure][year][0]))
                     )
             }
         }
