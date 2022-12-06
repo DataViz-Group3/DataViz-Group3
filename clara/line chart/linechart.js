@@ -57,11 +57,52 @@ function drawChart_a4_v1() {
 
 
 
-        var sumstat = d3.group(data, d => d.year)
+        var sumstat = d3.groups(data, d => d.year)
+        var years = sumstat.map(function(d){return d[0]});
 
-    
-        var color_dark = d3.scaleOrdinal().range(['#0d8b03', '#d6d600', '#006c8e', '#b10060', '#595959', '#f97600', '#8d0101', '#591c96'])
-        var color_light = d3.scaleOrdinal().range(['#94fc8c', '#feff89', '#89e2ff', '#fe8ac9', '#c4c4c4', '#ffae66', '#f62927', '#b27ee6'])
+        var color_light = d3.scaleOrdinal().domain([years]).range(['#94fc8c', '#feff89', '#89e2ff', '#fe8ac9', '#c4c4c4', '#ffae66', '#f62927', '#b27ee6'])
+        var color_dark = d3.scaleOrdinal().domain([years]).range(['#0d8b03', '#d6d600', '#006c8e', '#b10060', '#595959', '#f97600', '#8d0101', '#591c96'])
+
+        var color = d3.scaleOrdinal()
+                .domain([years])
+                .range(['#16f306', '#feff1e', '#1ec9ff', '#f80187', '#8e8e8e', '#ff9b42', '#cd0a08', '#7c27d2']);
+
+
+
+        var tooltip = d3.select(div_id)
+            .append("div")
+            .style("position", "absolute")
+            .style("opacity", 0)
+            .style("background-color", "rgb(211,211,211)")
+            .style("border-radius", "5px")
+            .style("padding", "10px")
+            .attr("class", "tooltip")
+            .style("width", "auto")
+            .style("height", "auto")
+            .style("pointer-events", "none")
+
+        // -2- Create 3 functions to show / update (when mouse move but stay on same circle) / hide the tooltip
+        var showTooltip = function(event, d) {
+            tooltip
+                .transition()
+                .duration(500)
+            tooltip
+                .style("opacity", 1)
+                .html(d.month+ " " + d.year+ ': <br> min:'+ d.min +  '<br> mean: ' + d.mean + '<br> max: ' + d.max)
+                .style("left", event.pageX + "px")
+                .style("top", (event.pageY - 28) + "px")
+        }
+
+        var hideTooltip = function(d) {
+            tooltip
+                .transition()
+                .duration(200)
+                .style("opacity", 0)
+        }
+        
+
+
+        
 
         //select path - three types: curveBasis,curveStep, curveCardinal
         g.selectAll(".line")
@@ -90,7 +131,64 @@ function drawChart_a4_v1() {
                     .y(function(d) { return y(d.max); })
                     (d[1])
             
-            })    
+            })   
+            
+
+
+
+        g.append('g')
+            .selectAll("dot")
+            .data(data)
+            .enter()
+            .append("circle")
+            .attr("cx", function(d) { return x(d.month); } )
+            .attr("cy", function(d) { return y(d.mean);})
+            .attr("r", 4)
+            .attr("fill", function(d){ return color(d.year) })
+            .on("mouseover", showTooltip )
+            .on("mouseleave", hideTooltip )
+
+
+        svg.selectAll("myrect")
+            .data(years)
+            .enter()
+            .append("circle")
+            .attr("cx", width - 135)
+            .attr("cy", function(d,i){ return  20+ i*25})
+            .attr("r", 7)
+            .style("fill", function(d){ return color_light(d)})
+
+        svg.selectAll("myrect")
+            .data(years)
+            .enter()
+            .append("circle")
+            .attr("cx", width - 120)
+            .attr("cy", function(d,i){ return 20 + i*25})
+            .attr("r", 7)
+            .style("fill", function(d){ return color(d)})
+
+        svg.selectAll("myrect")
+            .data(years)
+            .enter()
+            .append("circle")
+            .attr("cx", width - 105)
+            .attr("cy", function(d,i){ return  20+ i*25})
+            .attr("r", 7)
+            .style("fill", function(d){ return color_dark(d)})
+
+
+        // Add labels beside legend dots
+        svg.selectAll("mylabels")
+            .data(years)
+            .enter()
+            .append("text")
+            .attr("x", width-90)
+            .attr("y", function(d,i){ return i * 25 + 20})
+            .text(function(d){ return d})
+            .attr("text-anchor", "left")
+            .style("alignment-baseline", "middle")
+
+  
 
     });
 }
