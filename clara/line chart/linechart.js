@@ -108,7 +108,7 @@ function drawChart_a4_v1() {
 
         var highlight = function(event, d){
             // reduce opacity of all groups
-            d3.selectAll(".point").style("opacity", 0)
+            d3.selectAll(".point").style("opacity", 0.1)
             // expect the one that is hovered
             d3.selectAll("."+ normalize_year(d)).style("opacity", 1)
         }
