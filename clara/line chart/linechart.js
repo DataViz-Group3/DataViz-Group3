@@ -28,6 +28,11 @@ function drawChart_a4_v1() {
             d['mean'] = +d['mean'];
         });
 
+
+        let normalize_year = function (year) {
+            return 'y'+year;
+        }
+
         // Add X axis
         var x = d3.scaleBand().range([0, width]).padding(1).domain(data.map(function(d) { return d.month; }));
             
@@ -101,7 +106,17 @@ function drawChart_a4_v1() {
         }
         
 
+        var highlight = function(event, d){
+            // reduce opacity of all groups
+            d3.selectAll(".point").style("opacity", 0)
+            // expect the one that is hovered
+            d3.selectAll("."+ normalize_year(d)).style("opacity", 1)
+        }
 
+        // And when it is not hovered anymore
+        var noHighlight = function(event, d){
+            d3.selectAll(".point").style("opacity", 1)
+        }
         
 
         //select path - three types: curveBasis,curveStep, curveCardinal
@@ -110,6 +125,7 @@ function drawChart_a4_v1() {
             .join("path")
             .attr("fill", "none")
             .attr("stroke", function(d){ return color_light(d[0]) })
+            .attr("class", function(d) { return "point "+ normalize_year(d[0]) })
             .attr("stroke-width", 1.5)
             .attr("d", function (d) {
                 return d3.line()
@@ -124,6 +140,7 @@ function drawChart_a4_v1() {
             .join("path")
             .attr("fill", "none")
             .attr("stroke", function(d){ return color_dark(d[0]) })
+            .attr("class", function(d) { return "point "+ normalize_year(d[0]) })
             .attr("stroke-width", 1.5)
             .attr("d", function (d) {
                 return d3.line()
@@ -141,6 +158,7 @@ function drawChart_a4_v1() {
             .data(data)
             .enter()
             .append("circle")
+            .attr("class", function(d) { return "point "+ normalize_year(d.year) })
             .attr("cx", function(d) { return x(d.month); } )
             .attr("cy", function(d) { return y(d.mean);})
             .attr("r", 4)
@@ -157,6 +175,8 @@ function drawChart_a4_v1() {
             .attr("cy", function(d,i){ return  20+ i*25})
             .attr("r", 7)
             .style("fill", function(d){ return color_light(d)})
+            .on("mouseover", highlight)
+            .on("mouseleave", noHighlight)
 
         svg.selectAll("myrect")
             .data(years)
@@ -166,6 +186,8 @@ function drawChart_a4_v1() {
             .attr("cy", function(d,i){ return 20 + i*25})
             .attr("r", 7)
             .style("fill", function(d){ return color(d)})
+            .on("mouseover", highlight)
+            .on("mouseleave", noHighlight)
 
         svg.selectAll("myrect")
             .data(years)
@@ -175,6 +197,8 @@ function drawChart_a4_v1() {
             .attr("cy", function(d,i){ return  20+ i*25})
             .attr("r", 7)
             .style("fill", function(d){ return color_dark(d)})
+            .on("mouseover", highlight)
+            .on("mouseleave", noHighlight)
 
 
         // Add labels beside legend dots
@@ -187,6 +211,8 @@ function drawChart_a4_v1() {
             .text(function(d){ return d})
             .attr("text-anchor", "left")
             .style("alignment-baseline", "middle")
+            .on("mouseover", highlight)
+            .on("mouseleave", noHighlight)
 
   
 
