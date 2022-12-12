@@ -8,7 +8,7 @@ function drawChart_a4_v3() {
         .style("width", "100%");
 
     // set the dimensions and margins of the graph
-    const margin = {top: 20, right: 60, bottom: 20, left: 30},
+    const margin = {top: 20, right: 75, bottom: 20, left: 30},
         width = 800 - margin.left - margin.right,
         height = 400 - margin.top - margin.bottom;
 
@@ -71,8 +71,6 @@ function drawChart_a4_v3() {
         .style("width", "80%")
         .append("svg")
         .attr("viewBox", "0 0 " + (width + margin.left + margin.right) + " " + (height + margin.top + margin.bottom))
-        //.attr("width", width + margin.left + margin.right)
-        //.attr("height", height + margin.top + margin.bottom)
         .append("g")
         .attr("transform",
             `translate(${margin.left}, ${margin.top})`);
@@ -153,7 +151,6 @@ function drawChart_a4_v3() {
 
         // Function to update path based on year
         function drawRidges(year){
-            console.log(year)
             for(let k in measure_color){
                 const measure = measure_color[k][0];
 
