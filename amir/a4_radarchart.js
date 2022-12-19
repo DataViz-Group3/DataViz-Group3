@@ -96,12 +96,12 @@ function drawChart_a4_v2() {
     }
 
     var highlight = function (d) {
-        d3.selectAll("path").style("opacity", .01)
+        d3.select("#a4_v2").selectAll("path").style("opacity", .01)
         d3.select(`#Year${d}`).style("opacity", 1)
     }
 
     var noHighlight = function (d) {
-        d3.selectAll("path").style("opacity", 1)
+        d3.select("#a4_v2").selectAll("path").style("opacity", 1)
     }
 
     function myFunc() {
