@@ -1,11 +1,11 @@
-//sankey diagram
+//sankeydiagram
 // set the dimensions and margins
 var margin = { top: 10, right: 10, bottom: 10, left: 10 },
-    width = 700 - margin.left - margin.right,
-    height = 700 - margin.top - margin.bottom;
+    width = 750 - margin.left - margin.right,
+    height = 750 - margin.top - margin.bottom;
 
 // append the svg  to the body of the page
-var svg = d3.select("#graph1").append("svg")
+var svg = d3.select("#graph").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -15,14 +15,17 @@ var svg = d3.select("#graph1").append("svg")
 // colors that are used
 var color = d3.scaleOrdinal(d3.schemeCategory10);
 
-// define the sankey diagram properties
+// define the sankeydiagram properties
 var sankey = d3.sankey()
     .nodeWidth(36)
     .nodePadding(10)
     .size([width, height]);
 
 // load the data from json
-d3.json("scratch_8.json").then (function (error, graph) {
+url = "Deniz/sankeydiagram/sankey.json";
+d3.json(url, function(error, graph) {
+    console.log(graph);
+
 
 
     // creat a new Sankey generator with the default properties
@@ -40,7 +43,7 @@ d3.json("scratch_8.json").then (function (error, graph) {
         .attr("class", "link")
         .attr("d", sankey.link())
         .style("stroke-width", function (d) { return Math.max(1, d.dy); })
-        //.sort(function (a, b) { return b.dy - a.dy; })
+
         .on("mouseover", onMouseOverLinks)
         .on("mousemove", onMouseMoveLinks)
         .on("mouseout", onMouseOutLinks);
