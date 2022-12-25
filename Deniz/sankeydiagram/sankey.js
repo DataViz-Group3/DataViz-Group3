@@ -18,7 +18,7 @@ var color = d3.scaleOrdinal(d3.schemeCategory10);
 // define the sankeydiagram properties
 var sankey = d3.sankey()
     .nodeWidth(36)
-    .nodePadding(10)
+    .nodePadding(15)
     .size([width, height]);
 
 // load the data from json
